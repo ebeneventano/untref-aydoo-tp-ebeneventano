@@ -1,5 +1,6 @@
 package untref.aydoo.servicio;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface ProcesadorEstadistico {
 	String obtenerTiempoPromedio(Bicicleta bicicleta);
 	void comenzarAEscuchar(Path path);
 	void llenarMapaDeBicicletasUsadas(String csvFile);
-	List<Object> procesarCsvEnZip(String nombreArchivo);
+	List<File> procesarCsvEnZip(String nombreArchivo, String pathOutput);
 
 }
