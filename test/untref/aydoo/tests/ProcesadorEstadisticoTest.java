@@ -38,10 +38,12 @@ public class ProcesadorEstadisticoTest {
 	
 	@Test
 	public void testBicicletaUtilizadaMenosVeces(){
+		String nombreArchivo = "C:" + File.separator + "Users" + File.separator + "Emanuel" + File.separator + "recorrido.csv";
+		procesador.llenarMapaDeBicicletasUsadas(nombreArchivo);
 		List<Bicicleta> bicicletasMenosUsadas = procesador.obtenerBicicletaUtilizadaMenosVeces();
 		
-//		Assert.assertEquals("452", bicicletasMenosUsadas.get(0).getId());
-//		Assert.assertEquals("464", bicicletasMenosUsadas.get(1).getId());
+		Assert.assertEquals("452", bicicletasMenosUsadas.get(0).getId());
+		Assert.assertEquals("464", bicicletasMenosUsadas.get(1).getId());
 	}
 	
 	@Test

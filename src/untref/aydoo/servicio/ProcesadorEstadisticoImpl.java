@@ -45,8 +45,14 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 
 	@Override
 	public List<Bicicleta> obtenerBicicletaUtilizadaMenosVeces() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Bicicleta> bicicletasUsadas = new ArrayList<Bicicleta>();
+        int minValueInMap=(Collections.min(bicicletasMasUsadas.values()));  // This will return max value in the Hashmap
+        for (Entry<Bicicleta, Integer> entry : bicicletasMasUsadas.entrySet()) {  // Itrate through hashmap
+            if (entry.getValue()==minValueInMap) {
+            	bicicletasUsadas.add(entry.getKey());
+            }
+        }
+		return bicicletasUsadas;
 	}
 
 	@Override
