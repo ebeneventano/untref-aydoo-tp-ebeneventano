@@ -169,4 +169,10 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 			}
 		}
 	}
+
+	@Override
+	public List<Object> procesarCsvEnZip(String nombreArchivo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -48,6 +48,7 @@ public class ProcesadorEstadisticoTest {
 	
 	@Test
 	public void testRecorridoMasRealizado(){
+
 		List<Recorrido> recorridosMasRealizados = procesador.obtenerRecorridoMasRealizado();
 		
 //		String origenId = recorridosMasRealizados.get(0).getTrayectoria().getEstacionOrigen().getId();
@@ -60,5 +61,13 @@ public class ProcesadorEstadisticoTest {
 	
 	@Test
 	public void testTiempoPromedioDeUso(){
+	}
+	
+	@Test
+	public void testCantidadDeArchivosEnZip(){
+		String nombreArchivo = "C:" + File.separator + "Users" + File.separator + "Emanuel" + File.separator + "recorridos.zip";
+		List<Object> listaArchivos = procesador.procesarCsvEnZip(nombreArchivo);
+		
+		Assert.assertEquals(2, listaArchivos.size());
 	}
 }

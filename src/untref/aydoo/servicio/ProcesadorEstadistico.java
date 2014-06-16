@@ -14,5 +14,6 @@ public interface ProcesadorEstadistico {
 	String obtenerTiempoPromedio(Bicicleta bicicleta);
 	void comenzarAEscuchar(Path path);
 	void llenarMapaDeBicicletasUsadas(String csvFile);
+	List<Object> procesarCsvEnZip(String nombreArchivo);
 
 }
