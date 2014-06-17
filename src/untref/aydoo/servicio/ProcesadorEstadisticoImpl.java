@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,11 +22,14 @@ import java.nio.file.WatchService;
 import java.nio.file.WatchEvent.Kind;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import untref.aydoo.dominio.Bicicleta;
@@ -33,13 +38,11 @@ import untref.aydoo.dominio.Recorrido;
 
 public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 
-	private Map<Bicicleta, Integer> bicicletasMasUsadas = new HashMap<Bicicleta, Integer>();
-	
 	@Override
-	public List<Bicicleta> obtenerBicicletasUtilizadasMasVeces() {
+	public List<Bicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, Integer> bicicletas) {
 		List<Bicicleta> bicicletasUsadas = new ArrayList<Bicicleta>();
-        int maxValueInMap=(Collections.max(bicicletasMasUsadas.values()));  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, Integer> entry : bicicletasMasUsadas.entrySet()) {  // Itrate through hashmap
+        int maxValueInMap=(Collections.max(bicicletas.values()));  // This will return max value in the Hashmap
+        for (Entry<Bicicleta, Integer> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue()==maxValueInMap) {
             	bicicletasUsadas.add(entry.getKey());
             }
@@ -48,10 +51,10 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	@Override
-	public List<Bicicleta> obtenerBicicletaUtilizadaMenosVeces() {
+	public List<Bicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, Integer> bicicletas) {
 		List<Bicicleta> bicicletasUsadas = new ArrayList<Bicicleta>();
-        int minValueInMap=(Collections.min(bicicletasMasUsadas.values()));  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, Integer> entry : bicicletasMasUsadas.entrySet()) {  // Itrate through hashmap
+        int minValueInMap=(Collections.min(bicicletas.values()));  // This will return max value in the Hashmap
+        for (Entry<Bicicleta, Integer> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue()==minValueInMap) {
             	bicicletasUsadas.add(entry.getKey());
             }
@@ -106,10 +109,9 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 						// Este path corresponde al nombre del archivo que se creo 
 						Path newPath = ((WatchEvent<Path>) watchEvent).context();
 						
-						// Suponemos que el archivo que se va a alojar es un CSV.
-						String csvFile = path.toString() + File.separator + newPath;
-						this.llenarMapaDeBicicletasUsadas(csvFile);
-						this.obtenerBicicletasUtilizadasMasVeces();
+						// Suponemos que el archivo que se va a alojar es un ZIP.
+						String zipFilePath = path.toString() + File.separator + newPath;
+						this.procesarCsvEnZip(zipFilePath);
 					}
 				}
 				if(!key.reset()) {
@@ -138,24 +140,24 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		}
 	}
 	
-	public void llenarMapaDeBicicletasUsadas(String csvFile){
-	
+	public Map<Bicicleta,Integer> llenarMapaDeBicicletasUsadas(InputStreamReader csvFile){
+		Map<Bicicleta, Integer> bicicletas = new HashMap<Bicicleta, Integer>();
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ";";
 		
 		try {
-			br = new BufferedReader(new FileReader(csvFile));
+			br = new BufferedReader(csvFile);
 			while ((line = br.readLine()) != null) {
 				
 				// Spliteamos por punto y coma.
 				String[] recorrido = line.split(cvsSplitBy);
 				Bicicleta bicicleta = new Bicicleta();
 				bicicleta.setId(recorrido[1]);
-				if(!bicicletasMasUsadas.containsKey(bicicleta)){
-					bicicletasMasUsadas.put(bicicleta, 1);
+				if(!bicicletas.containsKey(bicicleta)){
+					bicicletas.put(bicicleta, 1);
 				}else{
-					bicicletasMasUsadas.put(bicicleta, bicicletasMasUsadas.get(bicicleta)+1);
+					bicicletas.put(bicicleta, bicicletas.get(bicicleta)+1);
 				}
 			}
 			
@@ -172,49 +174,45 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 				}
 			}
 		}
+		return bicicletas;
 	}
 
 	@Override
-	public List<File> procesarCsvEnZip(String nombreArchivo, String pathOutput) {
-		byte[] buffer = new byte[1024];
+	public List<File> procesarCsvEnZip(String nombreArchivo) throws IOException {
 	    List<File> filesInZip = new ArrayList<File>();
-	        
-	    try{
-	    //get the zip file content
-	    ZipInputStream zis = 
-	    	new ZipInputStream(new FileInputStream(nombreArchivo));
-	    //get the zipped file list entry
-	    ZipEntry ze = zis.getNextEntry();
 	    
-	    while(ze!=null){
+	    ZipFile zipFile = new ZipFile(nombreArchivo);
+	    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+	    while(entries.hasMoreElements()){
+	        ZipEntry entry = entries.nextElement();
+	        InputStream stream = zipFile.getInputStream(entry);
+	        InputStreamReader isr = new InputStreamReader(stream);
+	        Map<Bicicleta, Integer> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(isr);
+	        this.exportarYML(bicicletasEnCsv);
+	    }
+	    return filesInZip;
+	}
+	
+	@Override
+	public List<File> procesarCsvEnZip(List<String> zips) throws IOException {
+	    List<File> filesInZip = new ArrayList<File>();
 	    
-	    	String fileName = ze.getName();
-	    	File newFile = new File(pathOutput + File.separator + fileName);
-	        filesInZip.add(newFile);
-//	        System.out.println("file unzip : "+ newFile.getAbsoluteFile());
-	    
-            //create all non exists folders
-            //else you will hit FileNotFoundException for compressed folder
-//            new File(newFile.getParent()).mkdirs();
-//    
-//            FileOutputStream fos = new FileOutputStream(newFile);             
-//    
-//            int len;
-//            while ((len = zis.read(buffer)) > 0) {
-//            	fos.write(buffer, 0, len);
-//            }
-//    
-//            fos.close();   
-            ze = zis.getNextEntry();
-	     }
-	     zis.closeEntry();
-	     zis.close();
-	    
-	     System.out.println("Done");
-	    
-	     }catch(IOException ex){
-	    	 ex.printStackTrace(); 
-	     }
-	     return filesInZip;
+	    for(String unNombreArchivo : zips){
+		    ZipFile zipFile = new ZipFile(unNombreArchivo);
+		    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+	
+		    while(entries.hasMoreElements()){
+		        ZipEntry entry = entries.nextElement();
+		        InputStream stream = zipFile.getInputStream(entry);
+		        InputStreamReader isr = new InputStreamReader(stream);
+		        Map<Bicicleta, Integer> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(isr);
+		        this.exportarYML(bicicletasEnCsv);
+		    }
+	    }
+	    return filesInZip;
+	}
+
+	private void exportarYML(Map<Bicicleta, Integer> bicicletasEnCsv) {
 	}
 }

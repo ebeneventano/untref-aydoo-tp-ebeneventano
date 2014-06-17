@@ -1,6 +1,7 @@
 package untref.aydoo.tests;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,8 +29,8 @@ public class ProcesadorEstadisticoTest {
 	@Test
 	public void testBicicletaUtilizadaMasVeces(){
 //		String nombreArchivo = "C:" + File.separator + "Users" + File.separator + "Emanuel" + File.separator + "recorrido.csv";
-//		procesador.llenarMapaDeBicicletasUsadas(nombreArchivo);
-		List<Bicicleta> bicicletasMasUsadas = procesador.obtenerBicicletasUtilizadasMasVeces();
+//		List<Bicicleta> bicicletasMasUsadas = procesador.obtenerBicicletasUtilizadasMasVeces(
+//				procesador.llenarMapaDeBicicletasUsadas(nombreArchivo));
 //
 //		Assert.assertEquals("419", bicicletasMasUsadas.get(0).getId());
 //		Assert.assertEquals("434", bicicletasMasUsadas.get(1).getId());
@@ -39,9 +40,9 @@ public class ProcesadorEstadisticoTest {
 	@Test
 	public void testBicicletaUtilizadaMenosVeces(){
 //		String nombreArchivo = "C:" + File.separator + "Users" + File.separator + "Emanuel" + File.separator + "recorrido.csv";
-//		procesador.llenarMapaDeBicicletasUsadas(nombreArchivo);
-		List<Bicicleta> bicicletasMenosUsadas = procesador.obtenerBicicletaUtilizadaMenosVeces();
-		
+//		List<Bicicleta> bicicletasMenosUsadas = procesador.obtenerBicicletaUtilizadaMenosVeces(
+//				procesador.llenarMapaDeBicicletasUsadas(nombreArchivo));
+//		
 //		Assert.assertEquals("452", bicicletasMenosUsadas.get(0).getId());
 //		Assert.assertEquals("464", bicicletasMenosUsadas.get(1).getId());
 	}
@@ -49,7 +50,7 @@ public class ProcesadorEstadisticoTest {
 	@Test
 	public void testRecorridoMasRealizado(){
 
-		List<Recorrido> recorridosMasRealizados = procesador.obtenerRecorridoMasRealizado();
+//		List<Recorrido> recorridosMasRealizados = procesador.obtenerRecorridoMasRealizado();
 		
 //		String origenId = recorridosMasRealizados.get(0).getTrayectoria().getEstacionOrigen().getId();
 //		String destinoId = recorridosMasRealizados.get(0).getTrayectoria().getEstacionDestino().getId();
@@ -64,10 +65,9 @@ public class ProcesadorEstadisticoTest {
 	}
 	
 	@Test
-	public void testCantidadDeArchivosEnZip(){
-//		String pathOutput = "C:" + File.separator + "Users" + File.separator + "Emanuel";
+	public void testCantidadDeArchivosEnZip() throws IOException{
 //		String nombreArchivo = "C:" + File.separator + "Users" + File.separator + "Emanuel" + File.separator + "recorridos.zip";
-//		List<File> listaArchivos = procesador.procesarCsvEnZip(nombreArchivo, pathOutput);
+//		List<File> listaArchivos = procesador.procesarCsvEnZip(nombreArchivo);
 //		
 //		Assert.assertEquals(2, listaArchivos.size());
 	}
