@@ -3,7 +3,7 @@ package untref.aydoo.dtos;
 public class ExportYmlDTO {
 	
 	private Integer cantidadVecesUsada;
-	private Integer promedioUso;
+	private Integer tiempoUso;
 	private Integer mayorRecorridoRealizado;
 	private Integer cantidadMayorRecorridoRealizado;
 	
@@ -13,11 +13,11 @@ public class ExportYmlDTO {
 	public void setCantidadVecesUsada(Integer cantidadVecesUsada) {
 		this.cantidadVecesUsada = cantidadVecesUsada;
 	}
-	public Integer getPromedioUso() {
-		return promedioUso;
+	public Integer getTiempoUso() {
+		return tiempoUso;
 	}
-	public void setPromedioUso(Integer promedioUso) {
-		this.promedioUso = promedioUso;
+	public void setTiempoUso(Integer tiempoUso) {
+		this.tiempoUso = tiempoUso;
 	}
 	public Integer getMayorRecorridoRealizado() {
 		return mayorRecorridoRealizado;
