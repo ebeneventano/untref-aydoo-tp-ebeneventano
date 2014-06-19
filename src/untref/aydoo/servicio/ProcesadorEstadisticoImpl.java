@@ -6,10 +6,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,9 +14,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.nio.file.WatchEvent.Kind;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -27,10 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import untref.aydoo.dominio.Bicicleta;
 import untref.aydoo.dominio.Recorrido;
@@ -140,37 +135,42 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		}
 	}
 	
-	public Map<Bicicleta,Integer> llenarMapaDeBicicletasUsadas(InputStreamReader csvFile){
+	public Map<Bicicleta,Integer> llenarMapaDeBicicletasUsadas(ZipFile zipFile){
 		Map<Bicicleta, Integer> bicicletas = new HashMap<Bicicleta, Integer>();
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ";";
+	    
+		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		
-		try {
-			br = new BufferedReader(csvFile);
-			while ((line = br.readLine()) != null) {
-				
-				// Spliteamos por punto y coma.
-				String[] recorrido = line.split(cvsSplitBy);
-				Bicicleta bicicleta = new Bicicleta();
-				bicicleta.setId(recorrido[1]);
-				if(!bicicletas.containsKey(bicicleta)){
-					bicicletas.put(bicicleta, 1);
-				}else{
-					bicicletas.put(bicicleta, bicicletas.get(bicicleta)+1);
+		while(entries.hasMoreElements()){
+			try {
+				ZipEntry entry = entries.nextElement();
+			    InputStream stream = zipFile.getInputStream(entry);
+			    InputStreamReader isr = new InputStreamReader(stream);
+			    br = new BufferedReader(isr);
+			    while ((line = br.readLine()) != null) {
+					// Spliteamos por punto y coma.
+					String[] recorrido = line.split(cvsSplitBy);
+					Bicicleta bicicleta = new Bicicleta();
+					bicicleta.setId(recorrido[1]);
+					if(!bicicletas.containsKey(bicicleta)){
+						bicicletas.put(bicicleta, 1);
+					}else{
+						bicicletas.put(bicicleta, bicicletas.get(bicicleta)+1);
+					}
 				}
-			}
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -178,41 +178,18 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	@Override
-	public List<File> procesarCsvEnZip(String nombreArchivo) throws IOException {
-	    List<File> filesInZip = new ArrayList<File>();
-	    
+	public void procesarCsvEnZip(String nombreArchivo) throws IOException {
 	    ZipFile zipFile = new ZipFile(nombreArchivo);
-	    Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-	    while(entries.hasMoreElements()){
-	        ZipEntry entry = entries.nextElement();
-	        InputStream stream = zipFile.getInputStream(entry);
-	        InputStreamReader isr = new InputStreamReader(stream);
-	        Map<Bicicleta, Integer> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(isr);
-	        this.exportarYML(bicicletasEnCsv);
-	    }
-	    return filesInZip;
+	    Map<Bicicleta, Integer> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(zipFile);
+	    this.exportarYML(bicicletasEnCsv);
 	}
 	
 	@Override
-	public List<File> procesarCsvEnZip(List<String> zips) throws IOException {
-	    List<File> filesInZip = new ArrayList<File>();
-	    
-	    for(String unNombreArchivo : zips){
-		    ZipFile zipFile = new ZipFile(unNombreArchivo);
-		    Enumeration<? extends ZipEntry> entries = zipFile.entries();
-	
-		    while(entries.hasMoreElements()){
-		        ZipEntry entry = entries.nextElement();
-		        InputStream stream = zipFile.getInputStream(entry);
-		        InputStreamReader isr = new InputStreamReader(stream);
-		        Map<Bicicleta, Integer> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(isr);
-		        this.exportarYML(bicicletasEnCsv);
-		    }
-	    }
-	    return filesInZip;
+	public void procesarCsvEnZip(List<String> zips) throws IOException {
 	}
 
 	private void exportarYML(Map<Bicicleta, Integer> bicicletasEnCsv) {
+		List<Bicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
+		bicicletasMasUsadas.size();
 	}
 }

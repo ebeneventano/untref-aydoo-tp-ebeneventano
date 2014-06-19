@@ -1,12 +1,10 @@
 package untref.aydoo.servicio;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import untref.aydoo.dominio.Bicicleta;
 import untref.aydoo.dominio.Recorrido;
@@ -18,7 +16,7 @@ public interface ProcesadorEstadistico {
 	List<Recorrido> obtenerRecorridoMasRealizado();
 	String obtenerTiempoPromedio(Bicicleta bicicleta);
 	void comenzarAEscuchar(Path path);
-	Map<Bicicleta,Integer> llenarMapaDeBicicletasUsadas(InputStreamReader csvFile);
-	List<File> procesarCsvEnZip(String nombreArchivo) throws IOException;
-	List<File> procesarCsvEnZip(List<String> zips) throws IOException;
+	Map<Bicicleta,Integer> llenarMapaDeBicicletasUsadas(ZipFile zipFile);
+	void procesarCsvEnZip(String nombreArchivo) throws IOException;
+	void procesarCsvEnZip(List<String> zips) throws IOException;
 }
