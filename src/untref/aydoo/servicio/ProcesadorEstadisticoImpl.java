@@ -18,6 +18,7 @@ import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,15 +36,15 @@ import untref.aydoo.dtos.ExportYmlDTO;
 public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 
 	@Override
-	public List<Bicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
-		List<Bicicleta> bicicletasUsadas = new ArrayList<Bicicleta>();
+	public Map<Bicicleta,ExportYmlDTO> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
+		Map<Bicicleta, ExportYmlDTO> bicicletasAExportar = new HashMap<Bicicleta, ExportYmlDTO>();
         int maxValueInMap=(this.getVecesMasUsada(bicicletas));  // This will return max value in the Hashmap
         for (Entry<Bicicleta, ExportYmlDTO> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue().getCantidadVecesUsada()==maxValueInMap) {
-            	bicicletasUsadas.add(entry.getKey());
+            	bicicletasAExportar.put(entry.getKey(), entry.getValue());
             }
         }
-		return bicicletasUsadas;
+		return bicicletasAExportar;
 	}
 
 	private int getVecesMasUsada(Map<Bicicleta, ExportYmlDTO> bicicletas) {
@@ -57,19 +58,25 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	@Override
-	public List<Bicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
-		List<Bicicleta> bicicletasUsadas = new ArrayList<Bicicleta>();
+	public Map<Bicicleta,ExportYmlDTO> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
+		Map<Bicicleta, ExportYmlDTO> bicicletasAExportar = new HashMap<Bicicleta, ExportYmlDTO>();
         int minValueInMap = this.getMenosVecesUsada(bicicletas);  // This will return max value in the Hashmap
         for (Entry<Bicicleta, ExportYmlDTO> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue().getCantidadVecesUsada()==minValueInMap) {
-            	bicicletasUsadas.add(entry.getKey());
+            	bicicletasAExportar.put(entry.getKey(),entry.getValue());
             }
         }
-		return bicicletasUsadas;
+		return bicicletasAExportar;
 	}
 
 	private int getMenosVecesUsada(Map<Bicicleta, ExportYmlDTO> bicicletas) {
-		return 0;
+		int cantidadMinima= bicicletas.values().iterator().next().getCantidadVecesUsada();
+		for(ExportYmlDTO export : bicicletas.values()){
+			if(cantidadMinima > export.getCantidadVecesUsada()){
+				cantidadMinima = export.getCantidadVecesUsada();
+			}
+		}
+		return cantidadMinima;
 	}
 
 	@Override
@@ -175,18 +182,18 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 					Bicicleta bicicleta = new Bicicleta();
 					bicicleta.setId(recorrido[1]);
 					ExportYmlDTO export;
-					if(!bicicletas.containsKey(bicicleta)){
-						export = new ExportYmlDTO();
-						export.setCantidadVecesUsada(1);
-						export.setTiempoUso(Integer.parseInt(recorrido[8]));
-						bicicletas.put(bicicleta, export);
-					}else{
-						export = bicicletas.get(bicicleta);
-						export.setCantidadVecesUsada(export.getCantidadVecesUsada()+1);
-						export.setTiempoUso(export.getTiempoUso()+Integer.parseInt(recorrido[8]));
-						bicicletas.put(bicicleta, export);
+						if(!bicicletas.containsKey(bicicleta)){
+							export = new ExportYmlDTO();
+							export.setCantidadVecesUsada(1);
+							export.setTiempoUso(Integer.parseInt(recorrido[8]));
+							bicicletas.put(bicicleta, export);
+						}else{
+							export = bicicletas.get(bicicleta);
+							export.setCantidadVecesUsada(export.getCantidadVecesUsada()+1);
+							export.setTiempoUso(export.getTiempoUso()+Integer.parseInt(recorrido[8]));
+							bicicletas.put(bicicleta, export);
+						}
 					}
-				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -216,8 +223,21 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	private void exportarYML(Map<Bicicleta, ExportYmlDTO> bicicletasEnCsv) {
-		List<Bicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
-		List<Bicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
+		Map<Bicicleta,ExportYmlDTO> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
+		Map<Bicicleta,ExportYmlDTO> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
+		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
+		
 		bicicletasMasUsadas.size();
+		bicicletasMenosUsadas.size();
+	}
+
+	private Integer getPromedioUso(Map<Bicicleta, ExportYmlDTO> bicicletasEnCsv) {
+		Integer cantidadTotalDeUso = 0;
+		Collection<ExportYmlDTO> collecionDeExports = bicicletasEnCsv.values();
+		for(ExportYmlDTO unExport : collecionDeExports){
+			cantidadTotalDeUso += unExport.getTiempoUso();
+		}
+		Integer promedio = cantidadTotalDeUso / bicicletasEnCsv.size();
+		return promedio;
 	}
 }

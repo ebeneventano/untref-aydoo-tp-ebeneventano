@@ -12,8 +12,8 @@ import untref.aydoo.dtos.ExportYmlDTO;
 
 public interface ProcesadorEstadistico {
 
-	List<Bicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
-	List<Bicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
+	Map<Bicicleta,ExportYmlDTO> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
+	Map<Bicicleta,ExportYmlDTO> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
 	List<Recorrido> obtenerRecorridoMasRealizado();
 	String obtenerTiempoPromedio(Bicicleta bicicleta);
 	void comenzarAEscuchar(Path path);
