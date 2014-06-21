@@ -5,17 +5,17 @@ import untref.aydoo.dominio.Bicicleta;
 public class ExportYmlDTO {
 	private Bicicleta bicicletaMasUsada;
 	private Bicicleta bicicletaMenosUsada;
-	private Integer cantidadVecesUsada;
+	private Integer cantidadVecesMasUsada;
 	private Integer cantidadVecesMenosUsada;
 	private Integer tiempoUso;
-	private Integer mayorRecorridoRealizado;
-	private Integer cantidadMayorRecorridoRealizado;
+//	private Integer mayorRecorridoRealizado;
+//	private Integer cantidadMayorRecorridoRealizado;
 	
 	public Integer getCantidadVecesUsada() {
-		return cantidadVecesUsada;
+		return cantidadVecesMasUsada;
 	}
 	public void setCantidadVecesUsada(Integer cantidadVecesUsada) {
-		this.cantidadVecesUsada = cantidadVecesUsada;
+		this.cantidadVecesMasUsada = cantidadVecesUsada;
 	}
 	public Integer getTiempoUso() {
 		return tiempoUso;
@@ -23,19 +23,19 @@ public class ExportYmlDTO {
 	public void setTiempoUso(Integer tiempoUso) {
 		this.tiempoUso = tiempoUso;
 	}
-	public Integer getMayorRecorridoRealizado() {
-		return mayorRecorridoRealizado;
-	}
-	public void setMayorRecorridoRealizado(Integer mayorRecorridoRealizado) {
-		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
-	}
-	public Integer getCantidadMayorRecorridoRealizado() {
-		return cantidadMayorRecorridoRealizado;
-	}
-	public void setCantidadMayorRecorridoRealizado(
-			Integer cantidadMayorRecorridoRealizado) {
-		this.cantidadMayorRecorridoRealizado = cantidadMayorRecorridoRealizado;
-	}
+//	public Integer getMayorRecorridoRealizado() {
+//		return mayorRecorridoRealizado;
+//	}
+//	public void setMayorRecorridoRealizado(Integer mayorRecorridoRealizado) {
+//		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
+//	}
+//	public Integer getCantidadMayorRecorridoRealizado() {
+//		return cantidadMayorRecorridoRealizado;
+//	}
+//	public void setCantidadMayorRecorridoRealizado(
+//			Integer cantidadMayorRecorridoRealizado) {
+//		this.cantidadMayorRecorridoRealizado = cantidadMayorRecorridoRealizado;
+//	}
 	public void setBicicletaMasUsada(Bicicleta bicicletaMasUsada) {
 		this.bicicletaMasUsada = bicicletaMasUsada;
 	}

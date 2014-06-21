@@ -25,7 +25,7 @@ public class ProcesadorMain {
 		Path pathProcesing = Paths.get(pathAProcesar);
 
 //		procesador.comenzarAEscuchar(pathListening);
-		
+//		procesador.procesarDirectorio(pathProcesing);
 		
 	}
 

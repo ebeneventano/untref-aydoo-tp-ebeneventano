@@ -28,18 +28,23 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.ho.yaml.Yaml;
+
 import untref.aydoo.dominio.Bicicleta;
+import untref.aydoo.dominio.Estacion;
 import untref.aydoo.dominio.Recorrido;
+import untref.aydoo.dominio.Trayectoria;
+import untref.aydoo.dtos.DatosBicicleta;
 import untref.aydoo.dtos.ExportYmlDTO;
 
 
 public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 
 	@Override
-	public Map<Bicicleta,ExportYmlDTO> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
-		Map<Bicicleta, ExportYmlDTO> bicicletasAExportar = new HashMap<Bicicleta, ExportYmlDTO>();
+	public Map<Bicicleta,DatosBicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, DatosBicicleta> bicicletas) {
+		Map<Bicicleta, DatosBicicleta> bicicletasAExportar = new HashMap<Bicicleta, DatosBicicleta>();
         int maxValueInMap=(this.getVecesMasUsada(bicicletas));  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, ExportYmlDTO> entry : bicicletas.entrySet()) {  // Itrate through hashmap
+        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue().getCantidadVecesUsada()==maxValueInMap) {
             	bicicletasAExportar.put(entry.getKey(), entry.getValue());
             }
@@ -47,9 +52,9 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		return bicicletasAExportar;
 	}
 
-	private int getVecesMasUsada(Map<Bicicleta, ExportYmlDTO> bicicletas) {
+	private int getVecesMasUsada(Map<Bicicleta, DatosBicicleta> bicicletas) {
 		int cantidadMaxima=0;
-		for(ExportYmlDTO export : bicicletas.values()){
+		for(DatosBicicleta export : bicicletas.values()){
 			if(cantidadMaxima < export.getCantidadVecesUsada()){
 				cantidadMaxima = export.getCantidadVecesUsada();
 			}
@@ -58,10 +63,10 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	@Override
-	public Map<Bicicleta,ExportYmlDTO> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas) {
-		Map<Bicicleta, ExportYmlDTO> bicicletasAExportar = new HashMap<Bicicleta, ExportYmlDTO>();
+	public Map<Bicicleta,DatosBicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, DatosBicicleta> bicicletas) {
+		Map<Bicicleta, DatosBicicleta> bicicletasAExportar = new HashMap<Bicicleta, DatosBicicleta>();
         int minValueInMap = this.getMenosVecesUsada(bicicletas);  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, ExportYmlDTO> entry : bicicletas.entrySet()) {  // Itrate through hashmap
+        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {  // Itrate through hashmap
             if (entry.getValue().getCantidadVecesUsada()==minValueInMap) {
             	bicicletasAExportar.put(entry.getKey(),entry.getValue());
             }
@@ -69,9 +74,9 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		return bicicletasAExportar;
 	}
 
-	private int getMenosVecesUsada(Map<Bicicleta, ExportYmlDTO> bicicletas) {
+	private int getMenosVecesUsada(Map<Bicicleta, DatosBicicleta> bicicletas) {
 		int cantidadMinima= bicicletas.values().iterator().next().getCantidadVecesUsada();
-		for(ExportYmlDTO export : bicicletas.values()){
+		for(DatosBicicleta export : bicicletas.values()){
 			if(cantidadMinima > export.getCantidadVecesUsada()){
 				cantidadMinima = export.getCantidadVecesUsada();
 			}
@@ -157,8 +162,8 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		}
 	}
 	
-	public Map<Bicicleta,ExportYmlDTO> llenarMapaDeBicicletasUsadas(ZipFile zipFile){
-		Map<Bicicleta, ExportYmlDTO> bicicletas = new HashMap<Bicicleta, ExportYmlDTO>();
+	public Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadas(ZipFile zipFile){
+		Map<Bicicleta, DatosBicicleta> bicicletas = new HashMap<Bicicleta, DatosBicicleta>();
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ";";
@@ -181,16 +186,25 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 					String[] recorrido = line.split(cvsSplitBy);
 					Bicicleta bicicleta = new Bicicleta();
 					bicicleta.setId(recorrido[1]);
-					ExportYmlDTO export;
+					DatosBicicleta export;
 						if(!bicicletas.containsKey(bicicleta)){
-							export = new ExportYmlDTO();
+							export = new DatosBicicleta();
 							export.setCantidadVecesUsada(1);
-							export.setTiempoUso(Integer.parseInt(recorrido[8]));
+							export.setTiempoDeUso(Integer.parseInt(recorrido[8]));
+							
+							export = agregarTrayectoriaAlExportDeDatosBicicleta(
+									recorrido, export);
+							
 							bicicletas.put(bicicleta, export);
 						}else{
 							export = bicicletas.get(bicicleta);
 							export.setCantidadVecesUsada(export.getCantidadVecesUsada()+1);
-							export.setTiempoUso(export.getTiempoUso()+Integer.parseInt(recorrido[8]));
+							export.setTiempoDeUso(export.getTiempoDeUso()+Integer.parseInt(recorrido[8]));
+							
+							export = agregarTrayectoriaAlExportDeDatosBicicleta(
+									recorrido, export);
+							
+							
 							bicicletas.put(bicicleta, export);
 						}
 					}
@@ -211,10 +225,34 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		return bicicletas;
 	}
 
+	private DatosBicicleta agregarTrayectoriaAlExportDeDatosBicicleta(String[] recorrido,
+			DatosBicicleta export) {
+		
+		Trayectoria trayectoria = new Trayectoria();
+		Estacion estacionOrigen = new Estacion();
+		estacionOrigen.setId(recorrido[3]);
+		estacionOrigen.setNombre(recorrido[4]);
+		
+		Estacion estacionDestino = new Estacion();
+		estacionDestino.setId(recorrido[6]);
+		estacionDestino.setNombre(recorrido[7]);
+		
+		trayectoria.setEstacionOrigen(estacionOrigen);
+		trayectoria.setEstacionDestino(estacionDestino);
+		
+		if(!export.getTrayectoriasRealizadas().containsKey(trayectoria)){
+			export.getTrayectoriasRealizadas().put(trayectoria, 1);
+		}else{
+			Map<Trayectoria,Integer> trayectorias = export.getTrayectoriasRealizadas();
+			trayectorias.put(trayectoria, trayectorias.get(trayectoria)+1);
+		}
+		return export;
+	}
+
 	@Override
 	public void procesarCsvEnZip(String nombreArchivo) throws IOException {
 	    ZipFile zipFile = new ZipFile(nombreArchivo);
-	    Map<Bicicleta, ExportYmlDTO> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(zipFile);
+	    Map<Bicicleta, DatosBicicleta> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(zipFile);
 	    this.exportarYML(bicicletasEnCsv);
 	}
 	
@@ -222,22 +260,39 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	public void procesarCsvEnZip(List<String> zips) throws IOException {
 	}
 
-	private void exportarYML(Map<Bicicleta, ExportYmlDTO> bicicletasEnCsv) {
-		Map<Bicicleta,ExportYmlDTO> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
-		Map<Bicicleta,ExportYmlDTO> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
-		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
+	private void exportarYML(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) throws FileNotFoundException {
+		ExportYmlDTO exportYml = new ExportYmlDTO();
+		Map<Bicicleta,DatosBicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
+		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
+		{
+		    exportYml.setBicicletaMasUsada(entry.getKey());
+		    exportYml.setCantidadVecesUsada(entry.getValue().getCantidadVecesUsada());
+		}
 		
-		bicicletasMasUsadas.size();
-		bicicletasMenosUsadas.size();
+		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
+		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMenosUsadas.entrySet())
+		{
+			exportYml.setBicicletaMenosUsada(entry.getKey());
+			exportYml.setCantidadVecesMenosUsada(entry.getValue().getCantidadVecesUsada());			
+		}
+		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
+		exportYml.setTiempoUso(promedioUso);
+		Yaml.dump(exportYml, new File(System.getProperty("user.home")+  File.separatorChar+ "yml" + File.separatorChar + "prueba.yml"));
 	}
 
-	private Integer getPromedioUso(Map<Bicicleta, ExportYmlDTO> bicicletasEnCsv) {
+	private Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
 		Integer cantidadTotalDeUso = 0;
-		Collection<ExportYmlDTO> collecionDeExports = bicicletasEnCsv.values();
-		for(ExportYmlDTO unExport : collecionDeExports){
-			cantidadTotalDeUso += unExport.getTiempoUso();
+		Collection<DatosBicicleta> collecionDeExports = bicicletasEnCsv.values();
+		for(DatosBicicleta unExport : collecionDeExports){
+			cantidadTotalDeUso += unExport.getTiempoDeUso();
 		}
 		Integer promedio = cantidadTotalDeUso / bicicletasEnCsv.size();
 		return promedio;
+	}
+
+	@Override
+	public void procesarDirectorio(Path pathProcesing) {
+		// TODO Auto-generated method stub
+		
 	}
 }

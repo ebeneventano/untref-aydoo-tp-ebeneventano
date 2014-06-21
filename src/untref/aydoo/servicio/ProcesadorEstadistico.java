@@ -8,16 +8,18 @@ import java.util.zip.ZipFile;
 
 import untref.aydoo.dominio.Bicicleta;
 import untref.aydoo.dominio.Recorrido;
+import untref.aydoo.dtos.DatosBicicleta;
 import untref.aydoo.dtos.ExportYmlDTO;
 
 public interface ProcesadorEstadistico {
 
-	Map<Bicicleta,ExportYmlDTO> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
-	Map<Bicicleta,ExportYmlDTO> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, ExportYmlDTO> bicicletas);
+	Map<Bicicleta,DatosBicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, DatosBicicleta> bicicletas);
+	Map<Bicicleta,DatosBicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, DatosBicicleta> bicicletas);
 	List<Recorrido> obtenerRecorridoMasRealizado();
 	String obtenerTiempoPromedio(Bicicleta bicicleta);
 	void comenzarAEscuchar(Path path);
-	Map<Bicicleta,ExportYmlDTO> llenarMapaDeBicicletasUsadas(ZipFile zipFile);
+	Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadas(ZipFile zipFile);
 	void procesarCsvEnZip(String nombreArchivo) throws IOException;
 	void procesarCsvEnZip(List<String> zips) throws IOException;
+	void procesarDirectorio(Path pathProcesing);
 }
