@@ -17,13 +17,11 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -34,7 +32,6 @@ import org.ho.yaml.Yaml;
 
 import untref.aydoo.dominio.Bicicleta;
 import untref.aydoo.dominio.Estacion;
-import untref.aydoo.dominio.Recorrido;
 import untref.aydoo.dominio.Trayectoria;
 import untref.aydoo.dtos.DatosBicicleta;
 import untref.aydoo.dtos.ExportYmlDTO;
@@ -151,7 +148,9 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 						
 						// Suponemos que el archivo que se va a alojar es un ZIP.
 						String zipFilePath = path.toString() + File.separator + newPath;
-						this.procesarCsvEnZip(zipFilePath);
+						if(newPath.toString().toLowerCase().endsWith(".zip")){
+							this.procesarCsvEnZip(zipFilePath);
+						}
 					}
 				}
 				if(!key.reset()) {
@@ -190,6 +189,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		
 		while(entries.hasMoreElements()){
 			try {
+				int contadorDeLineas=1;
 				ZipEntry entry = entries.nextElement();
 			    InputStream stream = zipFile.getInputStream(entry);
 			    InputStreamReader isr = new InputStreamReader(stream);
@@ -201,10 +201,12 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 			    		line = br.readLine();
 			    		firstRead = false;
 			    	}
+			    	contadorDeLineas++;
 					String[] recorrido = line.split(cvsSplitBy);
 					Bicicleta bicicleta = new Bicicleta();
 					bicicleta.setId(recorrido[1]);
 					DatosBicicleta export;
+					if(recorrido.length == 9){
 						if(!bicicletas.containsKey(bicicleta)){
 							export = new DatosBicicleta();
 							export.setCantidadVecesUsada(1);
@@ -225,7 +227,11 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 							
 							bicicletas.put(bicicleta, export);
 						}
+					}else{
+						System.out.println("La fila " + Integer.toString(contadorDeLineas) + 
+								" del archivo " + entry.getName() + " posee un error y fue descartada para el analisis");
 					}
+			    }
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -271,13 +277,22 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	public void procesarCsvEnZip(String nombreArchivo) throws IOException {
 	    ZipFile zipFile = new ZipFile(nombreArchivo);
 	    Map<Bicicleta, DatosBicicleta> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(zipFile);
-	    this.exportarYML(bicicletasEnCsv);
-	}
-	
-	@Override
-	public void procesarCsvEnZip(List<String> zips) throws IOException {
+	    ExportYmlDTO exportable = this.exportarYML(bicicletasEnCsv);
+	    
+		Yaml.dump(exportable, new File(nombreArchivo+".yml"));
 	}
 
+	@Override
+	public void procesarDirectorio(Path pathProcesing) throws ZipException, IOException {
+		comprobarPath(pathProcesing);
+		File dir = new File(pathProcesing.toString());
+		File[] directoryListing = dir.listFiles();
+		
+		Map<Bicicleta,DatosBicicleta> datosEnDirectorio = this.llenarMapaDeBicicletasUsadasEnDirectorio(directoryListing);
+		ExportYmlDTO exportable = this.exportarYML(datosEnDirectorio);
+		
+		Yaml.dump(exportable, new File(pathProcesing.toString() + File.separatorChar + "salida.yml"));
+	}
 
 	private Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
 		Integer cantidadTotalDeUso = 0;
@@ -289,15 +304,6 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		return promedio;
 	}
 
-	@Override
-	public void procesarDirectorio(Path pathProcesing) throws ZipException, IOException {
-		comprobarPath(pathProcesing);
-		File dir = new File(pathProcesing.toString());
-		File[] directoryListing = dir.listFiles();
-		
-		Map<Bicicleta,DatosBicicleta> datosEnDirectorio = this.llenarMapaDeBicicletasUsadasEnDirectorio(directoryListing);
-		this.exportarYML(datosEnDirectorio);
-	}
 	
 	private Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadasEnDirectorio(File[] files) throws ZipException, IOException{
 		Map<Bicicleta, DatosBicicleta> bicicletas = new HashMap<Bicicleta, DatosBicicleta>();
@@ -314,6 +320,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 				    InputStream stream = zipFile.getInputStream(entry);
 				    InputStreamReader isr = new InputStreamReader(stream);
 				    br = new BufferedReader(isr);
+					int contadorDeLineas=1;
 				    boolean firstRead = true;
 				    while ((line = br.readLine()) != null) {
 						// Spliteamos por punto y coma.
@@ -321,10 +328,12 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 				    		line = br.readLine();
 				    		firstRead = false;
 				    	}
+				    	contadorDeLineas++;
 						String[] recorrido = line.split(cvsSplitBy);
 						Bicicleta bicicleta = new Bicicleta();
 						bicicleta.setId(recorrido[1]);
 						DatosBicicleta export;
+						if(recorrido.length == 9){
 							if(!bicicletas.containsKey(bicicleta)){
 								export = new DatosBicicleta();
 								export.setCantidadVecesUsada(1);
@@ -344,7 +353,11 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 								
 								bicicletas.put(bicicleta, export);
 							}
+						}else{
+							System.out.println("La fila " + Integer.toString(contadorDeLineas) + 
+									" del archivo " + entry.getName() + " posee un error y fue descartada para el analisis");
 						}
+				    }
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -363,7 +376,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		return bicicletas;
 	}
 
-	private void exportarYML(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) throws FileNotFoundException {
+	private ExportYmlDTO exportarYML(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) throws FileNotFoundException {
 		ExportYmlDTO exportYml = new ExportYmlDTO();
 		Map<Bicicleta,DatosBicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
@@ -386,6 +399,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 			exportYml.setMayorRecorridoRealizado(entry.getKey());
 			exportYml.setCantidadMayorRecorridoRealizado(entry.getValue());
 		}
-		Yaml.dump(exportYml, new File(System.getProperty("user.home")+  File.separatorChar+ "yml" + File.separatorChar + "prueba.yml"));
+		
+		return exportYml;
 	}
 }

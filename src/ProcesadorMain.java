@@ -26,14 +26,13 @@ public class ProcesadorMain {
 //					ProcesadorEstadistico procesador = new ProcesadorEstadisticoImpl();
 //					procesador.comenzarAEscuchar(pathListening);
 //				} catch (IOException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 //			}
 //		});  
 //		t1.start();
-		
-		
+//		
+//		
 //		Thread t2 = new Thread(new Runnable() {
 //		     public void run(){
 //		    	 System.out.println("Indique la carpeta que desea procesar todos los archivos");
@@ -46,7 +45,6 @@ public class ProcesadorMain {
 //					ProcesadorEstadistico procesador = new ProcesadorEstadisticoImpl();
 //					procesador.procesarDirectorio(pathProcesing);
 //				} catch (IOException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 //		     }
