@@ -1,6 +1,7 @@
 package untref.aydoo.dtos;
 
 import untref.aydoo.dominio.Bicicleta;
+import untref.aydoo.dominio.Trayectoria;
 
 public class ExportYmlDTO {
 	private Bicicleta bicicletaMasUsada;
@@ -8,8 +9,8 @@ public class ExportYmlDTO {
 	private Integer cantidadVecesMasUsada;
 	private Integer cantidadVecesMenosUsada;
 	private Integer tiempoUso;
-//	private Integer mayorRecorridoRealizado;
-//	private Integer cantidadMayorRecorridoRealizado;
+	private Trayectoria mayorRecorridoRealizado;
+	private Integer cantidadMayorRecorridoRealizado;
 	
 	public Integer getCantidadVecesUsada() {
 		return cantidadVecesMasUsada;
@@ -23,19 +24,19 @@ public class ExportYmlDTO {
 	public void setTiempoUso(Integer tiempoUso) {
 		this.tiempoUso = tiempoUso;
 	}
-//	public Integer getMayorRecorridoRealizado() {
-//		return mayorRecorridoRealizado;
-//	}
-//	public void setMayorRecorridoRealizado(Integer mayorRecorridoRealizado) {
-//		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
-//	}
-//	public Integer getCantidadMayorRecorridoRealizado() {
-//		return cantidadMayorRecorridoRealizado;
-//	}
-//	public void setCantidadMayorRecorridoRealizado(
-//			Integer cantidadMayorRecorridoRealizado) {
-//		this.cantidadMayorRecorridoRealizado = cantidadMayorRecorridoRealizado;
-//	}
+	public Trayectoria getMayorRecorridoRealizado() {
+		return mayorRecorridoRealizado;
+	}
+	public void setMayorRecorridoRealizado(Trayectoria mayorRecorridoRealizado) {
+		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
+	}
+	public Integer getCantidadMayorRecorridoRealizado() {
+		return cantidadMayorRecorridoRealizado;
+	}
+	public void setCantidadMayorRecorridoRealizado(
+			Integer cantidadMayorRecorridoRealizado) {
+		this.cantidadMayorRecorridoRealizado = cantidadMayorRecorridoRealizado;
+	}
 	public void setBicicletaMasUsada(Bicicleta bicicletaMasUsada) {
 		this.bicicletaMasUsada = bicicletaMasUsada;
 	}
