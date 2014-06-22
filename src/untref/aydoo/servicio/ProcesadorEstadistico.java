@@ -19,4 +19,5 @@ public interface ProcesadorEstadistico {
 	Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadas(ZipFile zipFile);
 	void procesarCsvEnZip(String nombreArchivo) throws IOException;
 	void procesarDirectorio(Path pathProcesing) throws ZipException, IOException;
+	Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv);
 }

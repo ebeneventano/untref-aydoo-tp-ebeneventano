@@ -294,13 +294,15 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		Yaml.dump(exportable, new File(pathProcesing.toString() + File.separatorChar + "salida.yml"));
 	}
 
-	private Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
+	public Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
 		Integer cantidadTotalDeUso = 0;
+		Integer cantidadDeRows = 0;
 		Collection<DatosBicicleta> collecionDeExports = bicicletasEnCsv.values();
 		for(DatosBicicleta unExport : collecionDeExports){
 			cantidadTotalDeUso += unExport.getTiempoDeUso();
+			cantidadDeRows += unExport.getCantidadVecesUsada();
 		}
-		Integer promedio = cantidadTotalDeUso / bicicletasEnCsv.size();
+		Integer promedio = cantidadTotalDeUso / cantidadDeRows;
 		return promedio;
 	}
 
