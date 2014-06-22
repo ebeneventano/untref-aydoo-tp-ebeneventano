@@ -292,6 +292,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		ExportYmlDTO exportable = this.exportarYML(datosEnDirectorio);
 		
 		Yaml.dump(exportable, new File(pathProcesing.toString() + File.separatorChar + "salida.yml"));
+		System.out.println("El archivo se exporto correctamente");
 	}
 
 	public Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
@@ -383,23 +384,23 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		Map<Bicicleta,DatosBicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
 		{
-			exportYml.setBicicletaMasUsada(entry.getKey());
-			exportYml.setCantidadVecesMasUsada(entry.getValue().getCantidadVecesUsada());
+			exportYml.addBicicletaMasUsada(entry.getKey());
+//			exportYml.setCantidadVecesMasUsada(entry.getValue().getCantidadVecesUsada());
 		}
 		
 		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMenosUsadas.entrySet())
 		{
-			exportYml.setBicicletaMenosUsada(entry.getKey());
-			exportYml.setCantidadVecesMenosUsada(entry.getValue().getCantidadVecesUsada());			
+			exportYml.addBicicletaMenosUsada(entry.getKey());
+//			exportYml.setCantidadVecesMenosUsada(entry.getValue().getCantidadVecesUsada());			
 		}
 		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
 		exportYml.setPromedioUso(promedioUso);
 		
 		Map<Trayectoria, Integer> recorridoMasRealizado = this.obtenerRecorridoMasRealizado(bicicletasEnCsv);
 		for(Map.Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()){
-			exportYml.setMayorRecorridoRealizado(entry.getKey());
-			exportYml.setCantidadMayorRecorridoRealizado(entry.getValue());
+			exportYml.addTrayectoriaMasRealizada(entry.getKey());
+//			exportYml.setCantidadMayorRecorridoRealizado(entry.getValue());
 		}
 		
 		return exportYml;
