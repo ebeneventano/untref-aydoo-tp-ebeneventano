@@ -392,7 +392,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 			exportYml.setCantidadVecesMenosUsada(entry.getValue().getCantidadVecesUsada());			
 		}
 		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
-		exportYml.setTiempoUso(promedioUso);
+		exportYml.setPromedioUso(promedioUso);
 		
 		Map<Trayectoria, Integer> recorridoMasRealizado = this.obtenerRecorridoMasRealizado(bicicletasEnCsv);
 		for(Map.Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()){
