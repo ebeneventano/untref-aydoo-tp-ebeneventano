@@ -98,7 +98,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		    	}else{
 		    		recorridoMasRealizado.put((Trayectoria)pairs.getKey(), (Integer)recorridoMasRealizado.get(pairs.getKey())+ (Integer)pairs.getValue());
 		    	}
-		    	it.remove(); // avoids a ConcurrentModificationException
+		    	it.remove();
 		    }
 		}
         
@@ -146,7 +146,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 						// Este path corresponde al nombre del archivo que se creo 
 						Path newPath = ((WatchEvent<Path>) watchEvent).context();
 						
-						// Suponemos que el archivo que se va a alojar es un ZIP.
+						// Suponemos que el archivo que se va a alojar es un ZIP pero lo valido.
 						String zipFilePath = path.toString() + File.separator + newPath;
 						if(newPath.toString().toLowerCase().endsWith(".zip")){
 							this.procesarCsvEnZip(zipFilePath);
@@ -385,14 +385,12 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
 		{
 			exportYml.addBicicletaMasUsada(entry.getKey());
-//			exportYml.setCantidadVecesMasUsada(entry.getValue().getCantidadVecesUsada());
 		}
 		
 		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMenosUsadas.entrySet())
 		{
 			exportYml.addBicicletaMenosUsada(entry.getKey());
-//			exportYml.setCantidadVecesMenosUsada(entry.getValue().getCantidadVecesUsada());			
 		}
 		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
 		exportYml.setPromedioUso(promedioUso);
@@ -400,7 +398,6 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		Map<Trayectoria, Integer> recorridoMasRealizado = this.obtenerRecorridoMasRealizado(bicicletasEnCsv);
 		for(Map.Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()){
 			exportYml.addTrayectoriaMasRealizada(entry.getKey());
-//			exportYml.setCantidadMayorRecorridoRealizado(entry.getValue());
 		}
 		
 		return exportYml;
