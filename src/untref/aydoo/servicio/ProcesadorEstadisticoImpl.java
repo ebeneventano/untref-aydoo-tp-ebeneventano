@@ -382,7 +382,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
 		{
 			exportYml.setBicicletaMasUsada(entry.getKey());
-			exportYml.setCantidadVecesUsada(entry.getValue().getCantidadVecesUsada());
+			exportYml.setCantidadVecesMasUsada(entry.getValue().getCantidadVecesUsada());
 		}
 		
 		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);

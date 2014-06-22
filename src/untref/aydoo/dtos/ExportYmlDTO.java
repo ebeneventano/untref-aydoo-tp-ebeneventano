@@ -12,11 +12,11 @@ public class ExportYmlDTO {
 	private Trayectoria mayorRecorridoRealizado;
 	private Integer cantidadMayorRecorridoRealizado;
 	
-	public Integer getCantidadVecesUsada() {
+	public Integer getCantidadVecesMasUsada() {
 		return cantidadVecesMasUsada;
 	}
-	public void setCantidadVecesUsada(Integer cantidadVecesUsada) {
-		this.cantidadVecesMasUsada = cantidadVecesUsada;
+	public void setCantidadVecesMasUsada(Integer cantidadVecesMasUsada) {
+		this.cantidadVecesMasUsada = cantidadVecesMasUsada;
 	}
 	public Integer getTiempoUso() {
 		return tiempoUso;
