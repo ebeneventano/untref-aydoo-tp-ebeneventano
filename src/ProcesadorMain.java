@@ -1,11 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import untref.aydoo.servicio.ProcesadorEstadistico;
-import untref.aydoo.servicio.ProcesadorEstadisticoImpl;
+import untref.aydoo.threads.ThreadListener;
+import untref.aydoo.threads.ThreadProcessor;
 
 
 public class ProcesadorMain {
@@ -14,43 +12,26 @@ public class ProcesadorMain {
 	public static void main(String[] args) throws IOException {
 		
 		
-		
-//		Thread t1 = new Thread(new Runnable() {
-//			public void run(){
-//				System.out.println("Indique la carpeta que desea escuchar por nuevos archivos");
-//				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//				String pathAEscuchar;
-//				try {
-//					pathAEscuchar = br.readLine();
-//					Path pathListening = Paths.get(pathAEscuchar);
-//					ProcesadorEstadistico procesador = new ProcesadorEstadisticoImpl();
-//					procesador.comenzarAEscuchar(pathListening);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});  
-//		t1.start();
-//		
-//		
-//		Thread t2 = new Thread(new Runnable() {
-//		     public void run(){
-//		    	 System.out.println("Indique la carpeta que desea procesar todos los archivos");
-//		    	 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//		    	 br = new BufferedReader(new InputStreamReader(System.in));
-//		    	 String pathAProcesar;
-//				try {
-//					pathAProcesar = br.readLine();
-//					Path pathProcesing = Paths.get(pathAProcesar);
-//					ProcesadorEstadistico procesador = new ProcesadorEstadisticoImpl();
-//					procesador.procesarDirectorio(pathProcesing);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//		     }
-//		 });  
-//		t2.start();
-		
+		int opcion = -1;
+		while(opcion != 0){
+			System.out.println("Seleccine una opcion: ");
+			System.out.println("1. Escuchar un directorio");
+			System.out.println("2. Procesar un directorio");
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			opcion = Integer.valueOf(br.readLine());
+			if(opcion == 1){
+				BufferedReader bufferListener = new BufferedReader(new InputStreamReader(System.in));
+				System.out.println("Ingrese la ruta del directorio que desea escuchar");
+				ThreadListener thread = new ThreadListener(bufferListener.readLine());
+				thread.start();
+			}else if(opcion == 2){
+				BufferedReader bufferListener = new BufferedReader(new InputStreamReader(System.in));
+				System.out.println("Ingrese la ruta del directorio que desea procesar");
+				ThreadProcessor thread = new ThreadProcessor(bufferListener.readLine());
+				thread.start();
+			}else{
+				System.out.println("Opcion incorrecto, vuelva a ingresar otra opcion");
+			}
+		}
 	}
-
 }
