@@ -64,10 +64,10 @@ public class ProcesadorMain extends JFrame{
 	    
 	    panel.add(processButton);
 
-	       setTitle("Procesador Estadistico");
-	       setSize(600, 200);
-	       setLocationRelativeTo(null);
-	       setDefaultCloseOperation(EXIT_ON_CLOSE);
+	    setTitle("Procesador Estadistico");
+	    setSize(600, 200);
+	    setLocationRelativeTo(null);
+	    setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	public static void main(String[] args) throws IOException {
