@@ -1,70 +1,146 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="untref-aydoo-tp-ebeneventano">
-    <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="C:/eclipse"/>
-    <property name="junit.output.dir" value="junit"/>
-    <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.6"/>
-    <property name="source" value="1.6"/>
-    <path id="JUnit 4.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
-    </path>
-    <path id="untref-aydoo-tp-ebeneventano.classpath">
-        <pathelement location="build/classes"/>
-        <path refid="JUnit 4.libraryclasspath"/>
-    </path>
-    <target name="init">
-        <mkdir dir="build/classes"/>
-        <copy includeemptydirs="false" todir="build/classes">
-            <fileset dir="src">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <copy includeemptydirs="false" todir="build/classes">
-            <fileset dir="test">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
+<project name="proyecto-java" basedir="." default="test">
+	<property name="build" location="build" />
+	<property name="libs" location="libs" />
+	<property name="classes.dir" location="build" />
+	<property name="instrumented.dir" location="${build}/instrumented" />
+	<property name="cobertura.dir" location="${libs}" />
+	<property name="reports.dir" location="${build}/reports" />
+	<property name="reports.xml.dir" location="${reports.dir}/junit-xml" />
+	<property name="reports.html.dir" location="${reports.dir}/junit-html" />
+	<property name="src.dir" location="src" />
+	<property name="coverage.xml.dir" location="${reports.dir}/cobertura-xml" />
+	<property name="coverage.summaryxml.dir" location="${reports.dir}/cobertura-summary-xml" />
+	<property name="coverage.html.dir" location="${reports.dir}/cobertura-html" />
+
+	<path id="classpath">
+		<fileset dir="${libs}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${build}" />
+		<pathelement location="${instrumented.dir}" />
+		<pathelement location="${build}/tests" />
+	</path>
+
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="setup">
+		<delete dir="${build}" />
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/classes"/>
+		<mkdir dir="${build}/tests"/>
+	</target>
+
+	<target name="compilar.aplicacion" depends="setup">
+		<javac srcdir="src" destdir="${build}" includeantruntime="false" debug="yes" target="1.6">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<target name="compilar.tests" depends="instrumentar.aplicacion">
+		<javac srcdir="test" destdir="${build}/tests" includeantruntime="false" debug="yes" target="1.6">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+
+	<target name="ejecutar.tests" depends="compilar.tests">
+		<junit fork="yes" failureProperty="test.failure"  forkmode="once">
+			<!-- <classpath refid="classpath" /> -->
+			<sysproperty key="net.sourceforge.cobertura.datafile"
+					file="${build}/cobertura.ser" />
+			<classpath location="${instrumented.dir}" />
+			<classpath location="${build}" />
+			<classpath refid="cobertura.classpath" />
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+			<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
+			<batchtest todir="${reports.xml.dir}" unless="testcase">
+				<fileset dir="${build}/tests" includes="**/*Test.class" />
+			</batchtest>
+		</junit>
+		<fail message="Pruebas fallidas" if="test.failure" />
+		<junitreport todir="${reports.xml.dir}">
+			<fileset dir="${reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.html.dir}" />
+		</junitreport>
+	</target>
+
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+
+	<target name="instrumentar.aplicacion" depends="compilar.aplicacion, init">
+		<delete file="${build}/cobertura.ser"/>					
+		<delete dir="${instrumented.dir}" />
+		<cobertura-instrument todir="${instrumented.dir}" datafile="${build}/cobertura.ser">
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${instrumented.dir}" />
+		<mkdir dir="${reports.xml.dir}" />
+		<mkdir dir="${reports.html.dir}" />
+	</target>
+
+	<target name="coverage-check">
+		<cobertura-check branchrate="34" totallinerate="100" />
+	</target>
+
+	<target name="coverage-report" depends="ejecutar.tests">
+		<cobertura-report srcdir="${src.dir}" destdir="${coverage.xml.dir}" format="xml" datafile="${build}/cobertura.ser" />
+	</target>
+
+	<target name="summary-coverage-report">
+		<cobertura-report srcdir="${src.dir}" destdir="${coverage.summaryxml.dir}" format="summaryXml" datafile="${build}/cobertura.ser" />
+	</target>
+
+	<target name="alternate-coverage-report">
+		<cobertura-report destdir="${coverage.html.dir}" datafile="${build}/cobertura.ser">
+			<fileset dir="${src.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<taskdef resource="checkstyletask.properties" classpath="${libs}/checkstyle-5.5-all.jar"/>
+
+	<target name="checkstyle" description="Generates a report of code convention violations.">
+  		<checkstyle config="${libs}/sun_checks.xml"
+              failureProperty="checkstyle.failure"
+              failOnViolation="false">
+	    	<fileset dir="src" includes="**/*.java"/>
+  		</checkstyle>
+	</target>
+
+	<target name="test" depends="ejecutar.tests, coverage-report, alternate-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports."/>
+
+	<target name="compilar.paquete" depends="test">
+		<javac srcdir="src" destdir="${build}/classes" debug="no">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="empaquetar" depends="compilar.paquete">
+	    <jar destfile="${build}/procesadorRun.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="untref.aydoo.ProcesadorMain"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${build}/classes"/>
+            <zipfileset excludes="META-INF/*.SF" src="${libs}/jyaml-1.3.jar"/>
+        </jar>
     </target>
-    <target name="clean">
-        <delete dir="build/classes"/>
-    </target>
-    <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
-    <target name="build-subprojects"/>
-    <target depends="init" name="build-project">
-        <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
-            <src path="src"/>
-            <classpath refid="untref-aydoo-tp-ebeneventano.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
-            <src path="test"/>
-            <classpath refid="untref-aydoo-tp-ebeneventano.classpath"/>
-        </javac>
-    </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="ProcesadorEstadisticoTest (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="untref.aydoo.tests.ProcesadorEstadisticoTest" todir="${junit.output.dir}"/>
-            <classpath refid="untref-aydoo-tp-ebeneventano.classpath"/>
-        </junit>
-    </target>
-    <target name="junitreport">
-        <junitreport todir="${junit.output.dir}">
-            <fileset dir="${junit.output.dir}">
-                <include name="TEST-*.xml"/>
-            </fileset>
-            <report format="frames" todir="${junit.output.dir}"/>
-        </junitreport>
-    </target>
+	
+	<target name="integracion-continua" depends="coverage-report" description="Ejecuta todas las tareas de integracion y genera los correspondientes reportes"/>
+
 </project>
