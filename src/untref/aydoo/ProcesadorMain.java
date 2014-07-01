@@ -22,47 +22,47 @@ public class ProcesadorMain extends JFrame{
 
 	    panel.setLayout(null);
 	    
-	    JLabel labelPath = new JLabel("Ingrese el path: ");
-	    labelPath.setBounds(50, 60, 140, 30);
-	    panel.add(labelPath);
+	    JLabel labelPathEscucharDir = new JLabel("Ingrese el path: ");
+	    labelPathEscucharDir.setBounds(50, 60, 140, 30);
+	    panel.add(labelPathEscucharDir);
 	    
-	    final JTextField textInput = new JTextField();
-	    textInput.setBounds(150, 60, 140, 30);
-	    panel.add(textInput);
+	    final JTextField pathSeleccionadoParaEscuchar = new JTextField();
+	    pathSeleccionadoParaEscuchar.setBounds(150, 60, 140, 30);
+	    panel.add(pathSeleccionadoParaEscuchar);
 
-	    JButton listenerButton = new JButton("Escuchar Directorio");
-	    listenerButton.setBounds(300, 60, 200, 30);
+	    JButton botonEscucharDir = new JButton("Escuchar Directorio");
+	    botonEscucharDir.setBounds(300, 60, 200, 30);
 	       
-	    listenerButton.addActionListener(new ActionListener() {
+	    botonEscucharDir.addActionListener(new ActionListener() {
 	    	@Override
 	        public void actionPerformed(ActionEvent event) {
-				ThreadListener thread = new ThreadListener(textInput.getText());
+				ThreadListener thread = new ThreadListener(pathSeleccionadoParaEscuchar.getText());
 				thread.start();
 	          }
 	    	});
 	    
-	    panel.add(listenerButton);
+	    panel.add(botonEscucharDir);
 	    
-	    JLabel label2 = new JLabel("Ingrese el path: ");
-	    label2.setBounds(50, 100, 140, 30);
-	    panel.add(label2);
+	    JLabel labelPathProcesarDir = new JLabel("Ingrese el path: ");
+	    labelPathProcesarDir.setBounds(50, 100, 140, 30);
+	    panel.add(labelPathProcesarDir);
 	    
-	    final JTextField textInput2 = new JTextField();
-	    textInput2.setBounds(150, 100, 140, 30);
-	    panel.add(textInput2);
+	    final JTextField pathSeleccionadoParaProcesar = new JTextField();
+	    pathSeleccionadoParaProcesar.setBounds(150, 100, 140, 30);
+	    panel.add(pathSeleccionadoParaProcesar);
 	    
-	    JButton processButton = new JButton("Procesar Directorio");
-	    processButton.setBounds(300, 100, 200, 30);
+	    JButton botonProcesar = new JButton("Procesar Directorio");
+	    botonProcesar.setBounds(300, 100, 200, 30);
 	       
-	    processButton.addActionListener(new ActionListener() {
+	    botonProcesar.addActionListener(new ActionListener() {
 	    	@Override
 	        public void actionPerformed(ActionEvent event) {
-				ThreadProcessor thread = new ThreadProcessor(textInput2.getText());
+				ThreadProcessor thread = new ThreadProcessor(pathSeleccionadoParaProcesar.getText());
 				thread.start();
 	          }
 	    	});
 	    
-	    panel.add(processButton);
+	    panel.add(botonProcesar);
 
 	    setTitle("Procesador Estadistico");
 	    setSize(600, 200);
@@ -75,8 +75,8 @@ public class ProcesadorMain extends JFrame{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	ProcesadorMain ex = new ProcesadorMain();
-                ex.setVisible(true);
+            	ProcesadorMain procesadorMain = new ProcesadorMain();
+                procesadorMain.setVisible(true);
             }
         });
 
