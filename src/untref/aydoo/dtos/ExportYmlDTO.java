@@ -12,47 +12,47 @@ public class ExportYmlDTO {
 	private Integer promedioUso;
 	private List<Trayectoria> mayorRecorridoRealizado = new ArrayList<Trayectoria>();
 	
-	public void setearBicicletaMasUsada(List<Bicicleta> bicicletaMasUsada) {
+	public void setBicicletaMasUsada(List<Bicicleta> bicicletaMasUsada) {
 		this.bicicletaMasUsada = bicicletaMasUsada;
 	}
 
-	public List<Bicicleta> obtenerBicicletaMasUsada() {
+	public List<Bicicleta> getBicicletaMasUsada() {
 		return bicicletaMasUsada;
 	}
 
-	public void setearPromedioUso(Integer promedioUso) {
+	public void setPromedioUso(Integer promedioUso) {
 		this.promedioUso = promedioUso;
 	}
 	
-	public Integer obtenerPromedioUso() {
+	public Integer getPromedioUso() {
 		return promedioUso;
 	}
 	
-	public void setearMayorRecorridoRealizado(List<Trayectoria> mayorRecorridoRealizado) {
+	public void setMayorRecorridoRealizado(List<Trayectoria> mayorRecorridoRealizado) {
 		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
 	}
 	
-	public List<Trayectoria> obtenerMayorRecorridoRealizado() {
+	public List<Trayectoria> getMayorRecorridoRealizado() {
 		return mayorRecorridoRealizado;
 	}
 	
-	public void setearBicicletaMenosUsada(List<Bicicleta> bicicletaMenosUsada) {
+	public void setBicicletaMenosUsada(List<Bicicleta> bicicletaMenosUsada) {
 		this.bicicletaMenosUsada = bicicletaMenosUsada;
 	}
 	
-	public List<Bicicleta> obtenerBicicletaMenosUsada() {
+	public List<Bicicleta> getBicicletaMenosUsada() {
 		return bicicletaMenosUsada;
 	}
 	
-	public void agregarBicicletaMasUsada(Bicicleta bicicleta){
+	public void addBicicletaMasUsada(Bicicleta bicicleta){
 		this.bicicletaMasUsada.add(bicicleta);
 	}
 	
-	public void agregarBicicletaMenosUsada(Bicicleta bicicleta){
+	public void addBicicletaMenosUsada(Bicicleta bicicleta){
 		this.bicicletaMenosUsada.add(bicicleta);
 	}
 	
-	public void agregarTrayectoriaMasRealizada(Trayectoria trayectoria){
+	public void addTrayectoriaMasRealizada(Trayectoria trayectoria){
 		this.mayorRecorridoRealizado.add(trayectoria);
 	}
 }

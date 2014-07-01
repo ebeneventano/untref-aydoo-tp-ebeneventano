@@ -37,7 +37,7 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMasUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("403", biciMasUsada.obtenerId());
+		Assert.assertEquals("403", biciMasUsada.getId());
 		Assert.assertEquals(Integer.valueOf(4), datosBiciMasUsada.obtenerCantidadVecesUsada());
 	}
 	
@@ -58,7 +58,7 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMenosUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("351", biciMenosUsada.obtenerId());
+		Assert.assertEquals("351", biciMenosUsada.getId());
 		Assert.assertEquals(Integer.valueOf(1), datosBiciMenosUsada.obtenerCantidadVecesUsada());
 	}
 	
@@ -112,7 +112,7 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMasUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("403", biciMasUsada.obtenerId());
+		Assert.assertEquals("403", biciMasUsada.getId());
 		Assert.assertEquals(Integer.valueOf(8), datosBiciMasUsada.obtenerCantidadVecesUsada());
 	}
 	
@@ -133,7 +133,7 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMenosUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("351", biciMenosUsada.obtenerId());
+		Assert.assertEquals("351", biciMenosUsada.getId());
 		Assert.assertEquals(Integer.valueOf(2), datosBiciMenosUsada.obtenerCantidadVecesUsada());
 	}
 	

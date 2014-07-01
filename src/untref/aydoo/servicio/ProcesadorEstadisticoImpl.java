@@ -202,7 +202,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 			    	contadorDeLineas++;
 					String[] recorrido = lineaLeida.split(cvsSpliteadoPor);
 					Bicicleta bicicleta = new Bicicleta();
-					bicicleta.setearId(recorrido[1]);
+					bicicleta.setId(recorrido[1]);
 					DatosBicicleta datosBicicleta;
 					if(recorrido.length == 9){
 						if(!bicicletas.containsKey(bicicleta)){
@@ -333,7 +333,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 				    	contadorDeLineas++;
 						String[] recorrido = lineaLeida.split(cvsSpliteadoPor);
 						Bicicleta bicicleta = new Bicicleta();
-						bicicleta.setearId(recorrido[1]);
+						bicicleta.setId(recorrido[1]);
 						DatosBicicleta datosBicicleta;
 						if(recorrido.length == 9){
 							if(!bicicletas.containsKey(bicicleta)){
@@ -383,20 +383,20 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		Map<Bicicleta,DatosBicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
 		{
-			exportYml.agregarBicicletaMasUsada(entry.getKey());
+			exportYml.addBicicletaMasUsada(entry.getKey());
 		}
 		
 		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMenosUsadas.entrySet())
 		{
-			exportYml.agregarBicicletaMenosUsada(entry.getKey());
+			exportYml.addBicicletaMenosUsada(entry.getKey());
 		}
 		Integer promedioUso = this.obtenerPromedioUso(bicicletasEnCsv);
-		exportYml.setearPromedioUso(promedioUso);
+		exportYml.setPromedioUso(promedioUso);
 		
 		Map<Trayectoria, Integer> recorridoMasRealizado = this.obtenerRecorridoMasRealizado(bicicletasEnCsv);
 		for(Map.Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()){
-			exportYml.agregarTrayectoriaMasRealizada(entry.getKey());
+			exportYml.addTrayectoriaMasRealizada(entry.getKey());
 		}
 		
 		return exportYml;
