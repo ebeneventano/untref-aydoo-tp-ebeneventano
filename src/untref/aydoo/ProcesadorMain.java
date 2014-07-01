@@ -22,9 +22,9 @@ public class ProcesadorMain extends JFrame{
 
 	    panel.setLayout(null);
 	    
-	    JLabel label1 = new JLabel("Ingrese el path: ");
-	    label1.setBounds(50, 60, 140, 30);
-	    panel.add(label1);
+	    JLabel labelPath = new JLabel("Ingrese el path: ");
+	    labelPath.setBounds(50, 60, 140, 30);
+	    panel.add(labelPath);
 	    
 	    final JTextField textInput = new JTextField();
 	    textInput.setBounds(150, 60, 140, 30);
