@@ -4,11 +4,11 @@ public class Bicicleta {
 		
 		private String id;
 
-		public void setId(String id) {
+		public void setearId(String id) {
 			this.id = id;
 		}
 
-		public String getId() {
+		public String obtenerId() {
 			return id;
 		}
 		
@@ -16,7 +16,7 @@ public class Bicicleta {
 	    public boolean equals(Object o) {
 	        if(o instanceof Bicicleta){
 	            Bicicleta other = (Bicicleta) o;
-	            return id.equals(other.getId());
+	            return id.equals(other.obtenerId());
 	        }
 
 	        return false;

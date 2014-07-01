@@ -51,7 +51,7 @@ public interface ProcesadorEstadistico {
 	/**
 	 * Procesa un directorio completo
 	 */
-	void procesarDirectorio(Path pathProcesing) throws ZipException, IOException;
+	void procesarDirectorio(Path pathAProcesar) throws ZipException, IOException;
 	
-	Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv);
+	Integer obtenerPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv);
 }

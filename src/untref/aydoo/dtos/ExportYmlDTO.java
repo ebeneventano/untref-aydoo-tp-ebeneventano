@@ -11,74 +11,48 @@ public class ExportYmlDTO {
 	private List<Bicicleta> bicicletaMenosUsada = new ArrayList<Bicicleta>();
 	private Integer promedioUso;
 	private List<Trayectoria> mayorRecorridoRealizado = new ArrayList<Trayectoria>();
-//	private Integer cantidadVecesMasUsada;
-//	private Integer cantidadVecesMenosUsada;
-//	private Integer cantidadMayorRecorridoRealizado;
 	
-	public void setBicicletaMasUsada(List<Bicicleta> bicicletaMasUsada) {
+	public void setearBicicletaMasUsada(List<Bicicleta> bicicletaMasUsada) {
 		this.bicicletaMasUsada = bicicletaMasUsada;
 	}
 
-	public List<Bicicleta> getBicicletaMasUsada() {
+	public List<Bicicleta> obtenerBicicletaMasUsada() {
 		return bicicletaMasUsada;
 	}
 
-	public void setPromedioUso(Integer promedioUso) {
+	public void setearPromedioUso(Integer promedioUso) {
 		this.promedioUso = promedioUso;
 	}
 	
-	public Integer getPromedioUso() {
+	public Integer obtenerPromedioUso() {
 		return promedioUso;
 	}
 	
-	public void setMayorRecorridoRealizado(List<Trayectoria> mayorRecorridoRealizado) {
+	public void setearMayorRecorridoRealizado(List<Trayectoria> mayorRecorridoRealizado) {
 		this.mayorRecorridoRealizado = mayorRecorridoRealizado;
 	}
 	
-	public List<Trayectoria> getMayorRecorridoRealizado() {
+	public List<Trayectoria> obtenerMayorRecorridoRealizado() {
 		return mayorRecorridoRealizado;
 	}
 	
-	public void setBicicletaMenosUsada(List<Bicicleta> bicicletaMenosUsada) {
+	public void setearBicicletaMenosUsada(List<Bicicleta> bicicletaMenosUsada) {
 		this.bicicletaMenosUsada = bicicletaMenosUsada;
 	}
 	
-	public List<Bicicleta> getBicicletaMenosUsada() {
+	public List<Bicicleta> obtenerBicicletaMenosUsada() {
 		return bicicletaMenosUsada;
 	}
 	
-	public void addBicicletaMasUsada(Bicicleta bicicleta){
+	public void agregarBicicletaMasUsada(Bicicleta bicicleta){
 		this.bicicletaMasUsada.add(bicicleta);
 	}
 	
-	public void addBicicletaMenosUsada(Bicicleta bicicleta){
+	public void agregarBicicletaMenosUsada(Bicicleta bicicleta){
 		this.bicicletaMenosUsada.add(bicicleta);
 	}
 	
-	public void addTrayectoriaMasRealizada(Trayectoria trayectoria){
+	public void agregarTrayectoriaMasRealizada(Trayectoria trayectoria){
 		this.mayorRecorridoRealizado.add(trayectoria);
 	}
-
-//	public void setCantidadVecesMasUsada(Integer cantidadVecesMasUsada) {
-//		this.cantidadVecesMasUsada = cantidadVecesMasUsada;
-//	}
-//
-//	public Integer getCantidadVecesMasUsada() {
-//		return cantidadVecesMasUsada;
-//	}
-//	public void setCantidadVecesMenosUsada(Integer cantidadVecesMenosUsada) {
-//		this.cantidadVecesMenosUsada = cantidadVecesMenosUsada;
-//	}
-//
-//	public Integer getCantidadVecesMenosUsada() {
-//		return cantidadVecesMenosUsada;
-//	}
-//	public void setCantidadMayorRecorridoRealizado(
-//			Integer cantidadMayorRecorridoRealizado) {
-//		this.cantidadMayorRecorridoRealizado = cantidadMayorRecorridoRealizado;
-//	}
-//
-//	public Integer getCantidadMayorRecorridoRealizado() {
-//		return cantidadMayorRecorridoRealizado;
-//	}
 }

@@ -42,20 +42,20 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	@Override
 	public Map<Bicicleta,DatosBicicleta> obtenerBicicletasUtilizadasMasVeces(Map<Bicicleta, DatosBicicleta> bicicletas) {
 		Map<Bicicleta, DatosBicicleta> bicicletasAExportar = new HashMap<Bicicleta, DatosBicicleta>();
-        int maxValueInMap=(this.getVecesMasUsada(bicicletas));  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {  // Itrate through hashmap
-            if (entry.getValue().getCantidadVecesUsada()==maxValueInMap) {
+        int maxValorEnMapa=(this.obtenerVecesMasUsada(bicicletas));  // Esto devuelve el maximo dentro del mapa.
+        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {
+            if (entry.getValue().obtenerCantidadVecesUsada()==maxValorEnMapa) {
             	bicicletasAExportar.put(entry.getKey(), entry.getValue());
             }
         }
 		return bicicletasAExportar;
 	}
 
-	private int getVecesMasUsada(Map<Bicicleta, DatosBicicleta> bicicletas) {
+	private int obtenerVecesMasUsada(Map<Bicicleta, DatosBicicleta> bicicletas) {
 		int cantidadMaxima=0;
 		for(DatosBicicleta export : bicicletas.values()){
-			if(cantidadMaxima < export.getCantidadVecesUsada()){
-				cantidadMaxima = export.getCantidadVecesUsada();
+			if(cantidadMaxima < export.obtenerCantidadVecesUsada()){
+				cantidadMaxima = export.obtenerCantidadVecesUsada();
 			}
 		}
 		return cantidadMaxima;
@@ -64,9 +64,9 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	@Override
 	public Map<Bicicleta,DatosBicicleta> obtenerBicicletaUtilizadaMenosVeces(Map<Bicicleta, DatosBicicleta> bicicletas) {
 		Map<Bicicleta, DatosBicicleta> bicicletasAExportar = new HashMap<Bicicleta, DatosBicicleta>();
-        int minValueInMap = this.getMenosVecesUsada(bicicletas);  // This will return max value in the Hashmap
-        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {  // Itrate through hashmap
-            if (entry.getValue().getCantidadVecesUsada()==minValueInMap) {
+        int minValorEnMapa = this.getMenosVecesUsada(bicicletas);  // Esto devuelve el menor valor dentro del mapa
+        for (Entry<Bicicleta, DatosBicicleta> entry : bicicletas.entrySet()) {
+            if (entry.getValue().obtenerCantidadVecesUsada()==minValorEnMapa) {
             	bicicletasAExportar.put(entry.getKey(),entry.getValue());
             }
         }
@@ -74,10 +74,10 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	private int getMenosVecesUsada(Map<Bicicleta, DatosBicicleta> bicicletas) {
-		int cantidadMinima= bicicletas.values().iterator().next().getCantidadVecesUsada();
+		int cantidadMinima= bicicletas.values().iterator().next().obtenerCantidadVecesUsada();
 		for(DatosBicicleta export : bicicletas.values()){
-			if(cantidadMinima > export.getCantidadVecesUsada()){
-				cantidadMinima = export.getCantidadVecesUsada();
+			if(cantidadMinima > export.obtenerCantidadVecesUsada()){
+				cantidadMinima = export.obtenerCantidadVecesUsada();
 			}
 		}
 		return cantidadMinima;
@@ -85,26 +85,27 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Map<Trayectoria, Integer> obtenerRecorridoMasRealizado(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
+	public Map<Trayectoria, Integer> obtenerRecorridoMasRealizado(Map<Bicicleta, 
+			DatosBicicleta> bicicletasEnCsv) {
 		Map<Trayectoria, Integer> recorridoADevolver = new HashMap<Trayectoria, Integer>();
 		Map<Trayectoria, Integer> recorridoMasRealizado = new HashMap<Trayectoria, Integer>();
 		for(DatosBicicleta entry : bicicletasEnCsv.values()){
-			Map<Trayectoria, Integer> trayectoriasPorBicicleta = entry.getTrayectoriasRealizadas();
-			Iterator it = trayectoriasPorBicicleta.entrySet().iterator();
-		    while (it.hasNext()) {
-		    	Map.Entry pairs = (Map.Entry)it.next();
-		    	if(!recorridoMasRealizado.containsKey(pairs.getKey())){
-		    		recorridoMasRealizado.put((Trayectoria)pairs.getKey(), (Integer)pairs.getValue());
+			Map<Trayectoria, Integer> trayectoriasPorBicicleta = entry.obtenerTrayectoriasRealizadas();
+			Iterator iterador = trayectoriasPorBicicleta.entrySet().iterator();
+		    while (iterador.hasNext()) {
+		    	Map.Entry paresClaveValor = (Map.Entry)iterador.next();
+		    	if(!recorridoMasRealizado.containsKey(paresClaveValor.getKey())){
+		    		recorridoMasRealizado.put((Trayectoria)paresClaveValor.getKey(), (Integer)paresClaveValor.getValue());
 		    	}else{
-		    		recorridoMasRealizado.put((Trayectoria)pairs.getKey(), (Integer)recorridoMasRealizado.get(pairs.getKey())+ (Integer)pairs.getValue());
+		    		recorridoMasRealizado.put((Trayectoria)paresClaveValor.getKey(), (Integer)recorridoMasRealizado.get(paresClaveValor.getKey())+ (Integer)paresClaveValor.getValue());
 		    	}
-		    	it.remove();
+		    	iterador.remove();
 		    }
 		}
         
-		int maxValueInMap=(Collections.max(recorridoMasRealizado.values()));  // This will return max value in the Hashmap
-        for (Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()) {  // Itrate through hashmap
-            if (entry.getValue()==maxValueInMap) {
+		int maxValorEnMapa=(Collections.max(recorridoMasRealizado.values()));
+        for (Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()) {
+            if (entry.getValue()==maxValorEnMapa) {
             	recorridoADevolver.put(entry.getKey(), entry.getValue());
             }
         }
@@ -123,38 +124,36 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		// Creamos un Watch Service que es el que va a quedarse escuchando
 		// por un nuevo archivo en la carpeta (path) indicado.
 		try{
-			WatchService service = fs.newWatchService(); 
+			WatchService servicioEscuchador = fs.newWatchService(); 
 			
 			// Registramos el path en el servicio y esperamos solo por eventos de creacion,
 			// es decir, por archivos nuevos que se alojen aqui.
-			path.register(service, ENTRY_CREATE);
+			path.register(servicioEscuchador, ENTRY_CREATE);
 			
 			// Empezamos a escuchar con un loop infinito
 			WatchKey key = null;
 			while(true) {
-				key = service.take();
+				key = servicioEscuchador.take();
 				
-				// Dequeueing events
-				Kind<?> kind = null;
-				for(WatchEvent<?> watchEvent : key.pollEvents()) {
-					// Get the type of the event
-					kind = watchEvent.kind();
-					if (OVERFLOW == kind) {
+				Kind<?> objetoEscuchado = null;
+				for(WatchEvent<?> eventoEscuchador : key.pollEvents()) {
+					objetoEscuchado = eventoEscuchador.kind();
+					if (OVERFLOW == objetoEscuchado) {
 						continue; //loop
-					} else if (ENTRY_CREATE == kind) {
+					} else if (ENTRY_CREATE == objetoEscuchado) {
 						
 						// Este path corresponde al nombre del archivo que se creo 
-						Path newPath = ((WatchEvent<Path>) watchEvent).context();
+						Path nombreArchivo = ((WatchEvent<Path>) eventoEscuchador).context();
 						
 						// Suponemos que el archivo que se va a alojar es un ZIP pero lo valido.
-						String zipFilePath = path.toString() + File.separator + newPath;
-						if(newPath.toString().toLowerCase().endsWith(".zip")){
-							this.procesarCsvEnZip(zipFilePath);
+						String pathArchivoZip = path.toString() + File.separator + nombreArchivo;
+						if(nombreArchivo.toString().toLowerCase().endsWith(".zip")){
+							this.procesarCsvEnZip(pathArchivoZip);
 						}
 					}
 				}
 				if(!key.reset()) {
-					break; //loop
+					break;
 				}
 			}
 		} catch(IOException ioe) {
@@ -167,14 +166,14 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	// Comprueba que el path que se le pasa sea una carpeta valida
 	private void comprobarPath(Path path) {
 		try{
-			Boolean isFolder = (Boolean) Files.getAttribute(path,
+			Boolean esCarpetaValida = (Boolean) Files.getAttribute(path,
 					"basic:isDirectory", NOFOLLOW_LINKS);
-			if (!isFolder) {
+			if (!esCarpetaValida) {
 				throw new IllegalArgumentException("El Path: " 
 						+ path + " no es una carpeta");
 			}
 		} catch (IOException ioe) {
-			// Folder does not exists
+			// La carpeta no existe.
 			ioe.printStackTrace();
 		}
 	}
@@ -182,50 +181,49 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	public Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadas(ZipFile zipFile){
 		Map<Bicicleta, DatosBicicleta> bicicletas = new HashMap<Bicicleta, DatosBicicleta>();
 		BufferedReader br = null;
-		String line = "";
-		String cvsSplitBy = ";";
+		String lineaLeida = "";
+		String cvsSpliteadoPor = ";";
 	    
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
+		Enumeration<? extends ZipEntry> archivosEnZip = zipFile.entries();
 		
-		while(entries.hasMoreElements()){
+		while(archivosEnZip.hasMoreElements()){
 			try {
 				int contadorDeLineas=1;
-				ZipEntry entry = entries.nextElement();
+				ZipEntry entry = archivosEnZip.nextElement();
 			    InputStream stream = zipFile.getInputStream(entry);
 			    InputStreamReader isr = new InputStreamReader(stream);
 			    br = new BufferedReader(isr);
-			    boolean firstRead = true;
-			    while ((line = br.readLine()) != null) {
-					// Spliteamos por punto y coma.
-			    	if(firstRead){
-			    		line = br.readLine();
-			    		firstRead = false;
+			    boolean esPrimeraLectura = true;
+			    while ((lineaLeida = br.readLine()) != null) {
+			    	if(esPrimeraLectura){
+			    		lineaLeida = br.readLine();
+			    		esPrimeraLectura = false;
 			    	}
 			    	contadorDeLineas++;
-					String[] recorrido = line.split(cvsSplitBy);
+					String[] recorrido = lineaLeida.split(cvsSpliteadoPor);
 					Bicicleta bicicleta = new Bicicleta();
-					bicicleta.setId(recorrido[1]);
-					DatosBicicleta export;
+					bicicleta.setearId(recorrido[1]);
+					DatosBicicleta datosBicicleta;
 					if(recorrido.length == 9){
 						if(!bicicletas.containsKey(bicicleta)){
-							export = new DatosBicicleta();
-							export.setCantidadVecesUsada(1);
-							export.setTiempoDeUso(Integer.parseInt(recorrido[8]));
+							datosBicicleta = new DatosBicicleta();
+							datosBicicleta.setearCantidadVecesUsada(1);
+							datosBicicleta.setearTiempoDeUso(Integer.parseInt(recorrido[8]));
 							
-							export = agregarTrayectoriaAlExportDeDatosBicicleta(
-									recorrido, export);
+							datosBicicleta = agregarTrayectoriaAlExportDeDatosBicicleta(
+									recorrido, datosBicicleta);
 							
-							bicicletas.put(bicicleta, export);
+							bicicletas.put(bicicleta, datosBicicleta);
 						}else{
-							export = bicicletas.get(bicicleta);
-							export.setCantidadVecesUsada(export.getCantidadVecesUsada()+1);
-							export.setTiempoDeUso(export.getTiempoDeUso()+Integer.parseInt(recorrido[8]));
+							datosBicicleta = bicicletas.get(bicicleta);
+							datosBicicleta.setearCantidadVecesUsada(datosBicicleta.obtenerCantidadVecesUsada()+1);
+							datosBicicleta.setearTiempoDeUso(datosBicicleta.obtenerTiempoDeUso()+Integer.parseInt(recorrido[8]));
 							
-							export = agregarTrayectoriaAlExportDeDatosBicicleta(
-									recorrido, export);
+							datosBicicleta = agregarTrayectoriaAlExportDeDatosBicicleta(
+									recorrido, datosBicicleta);
 							
 							
-							bicicletas.put(bicicleta, export);
+							bicicletas.put(bicicleta, datosBicicleta);
 						}
 					}else{
 						System.out.println("La fila " + Integer.toString(contadorDeLineas) + 
@@ -250,7 +248,7 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	}
 
 	private DatosBicicleta agregarTrayectoriaAlExportDeDatosBicicleta(String[] recorrido,
-			DatosBicicleta export) {
+			DatosBicicleta datosBicicleta) {
 		
 		Trayectoria trayectoria = new Trayectoria();
 		Estacion estacionOrigen = new Estacion();
@@ -264,46 +262,47 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		trayectoria.setEstacionOrigen(estacionOrigen);
 		trayectoria.setEstacionDestino(estacionDestino);
 		
-		if(!export.getTrayectoriasRealizadas().containsKey(trayectoria)){
-			export.getTrayectoriasRealizadas().put(trayectoria, 1);
+		if(!datosBicicleta.obtenerTrayectoriasRealizadas().containsKey(trayectoria)){
+			datosBicicleta.obtenerTrayectoriasRealizadas().put(trayectoria, 1);
 		}else{
-			Map<Trayectoria,Integer> trayectorias = export.getTrayectoriasRealizadas();
+			Map<Trayectoria,Integer> trayectorias = datosBicicleta.obtenerTrayectoriasRealizadas();
 			trayectorias.put(trayectoria, trayectorias.get(trayectoria)+1);
 		}
-		return export;
+		return datosBicicleta;
 	}
 
 	@Override
 	public void procesarCsvEnZip(String nombreArchivo) throws IOException {
-	    ZipFile zipFile = new ZipFile(nombreArchivo);
-	    Map<Bicicleta, DatosBicicleta> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(zipFile);
+	    ZipFile archivoZip = new ZipFile(nombreArchivo);
+	    Map<Bicicleta, DatosBicicleta> bicicletasEnCsv = this.llenarMapaDeBicicletasUsadas(archivoZip);
 	    ExportYmlDTO exportable = this.exportarYML(bicicletasEnCsv);
 	    
 		Yaml.dump(exportable, new File(nombreArchivo+".yml"));
 	}
 
 	@Override
-	public void procesarDirectorio(Path pathProcesing) throws ZipException, IOException {
-		comprobarPath(pathProcesing);
-		File dir = new File(pathProcesing.toString());
-		File[] directoryListing = dir.listFiles();
+	public void procesarDirectorio(Path pathAProcesar) throws ZipException, IOException {
+		comprobarPath(pathAProcesar);
+		File dir = new File(pathAProcesar.toString());
+		File[] listaArchivosEnDirectorio = dir.listFiles();
 		
-		Map<Bicicleta,DatosBicicleta> datosEnDirectorio = this.llenarMapaDeBicicletasUsadasEnDirectorio(directoryListing);
+		Map<Bicicleta,DatosBicicleta> datosEnDirectorio = 
+			this.llenarMapaDeBicicletasUsadasEnDirectorio(listaArchivosEnDirectorio);
 		ExportYmlDTO exportable = this.exportarYML(datosEnDirectorio);
 		
-		Yaml.dump(exportable, new File(pathProcesing.toString() + File.separatorChar + "salida.yml"));
+		Yaml.dump(exportable, new File(pathAProcesar.toString() + File.separatorChar + "salida.yml"));
 		System.out.println("El archivo se exporto correctamente");
 	}
 
-	public Integer getPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
+	public Integer obtenerPromedioUso(Map<Bicicleta, DatosBicicleta> bicicletasEnCsv) {
 		Integer cantidadTotalDeUso = 0;
-		Integer cantidadDeRows = 0;
+		Integer cantidadDeFilasLeidas = 0;
 		Collection<DatosBicicleta> collecionDeExports = bicicletasEnCsv.values();
 		for(DatosBicicleta unExport : collecionDeExports){
-			cantidadTotalDeUso += unExport.getTiempoDeUso();
-			cantidadDeRows += unExport.getCantidadVecesUsada();
+			cantidadTotalDeUso += unExport.obtenerTiempoDeUso();
+			cantidadDeFilasLeidas += unExport.obtenerCantidadVecesUsada();
 		}
-		Integer promedio = cantidadTotalDeUso / cantidadDeRows;
+		Integer promedio = cantidadTotalDeUso / cantidadDeFilasLeidas;
 		return promedio;
 	}
 
@@ -311,54 +310,54 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 	private Map<Bicicleta,DatosBicicleta> llenarMapaDeBicicletasUsadasEnDirectorio(File[] files) throws ZipException, IOException{
 		Map<Bicicleta, DatosBicicleta> bicicletas = new HashMap<Bicicleta, DatosBicicleta>();
 		BufferedReader br = null;
-		String line = "";
-		String cvsSplitBy = ";";
-	    for(File unFile : files){
-	    	ZipFile zipFile = new ZipFile(unFile);
-	    	Enumeration<? extends ZipEntry> entries = zipFile.entries();
+		String lineaLeida = "";
+		String cvsSpliteadoPor = ";";
+	    for(File unArchivo : files){
+	    	ZipFile zipFile = new ZipFile(unArchivo);
+	    	Enumeration<? extends ZipEntry> archivosEnZip = zipFile.entries();
 		
-			while(entries.hasMoreElements()){
+			while(archivosEnZip.hasMoreElements()){
 				try {
-					ZipEntry entry = entries.nextElement();
-				    InputStream stream = zipFile.getInputStream(entry);
+					ZipEntry archivoZip = archivosEnZip.nextElement();
+				    InputStream stream = zipFile.getInputStream(archivoZip);
 				    InputStreamReader isr = new InputStreamReader(stream);
 				    br = new BufferedReader(isr);
 					int contadorDeLineas=1;
-				    boolean firstRead = true;
-				    while ((line = br.readLine()) != null) {
+				    boolean esPrimeraLeida = true;
+				    while ((lineaLeida = br.readLine()) != null) {
 						// Spliteamos por punto y coma.
-				    	if(firstRead){
-				    		line = br.readLine();
-				    		firstRead = false;
+				    	if(esPrimeraLeida){
+				    		lineaLeida = br.readLine();
+				    		esPrimeraLeida = false;
 				    	}
 				    	contadorDeLineas++;
-						String[] recorrido = line.split(cvsSplitBy);
+						String[] recorrido = lineaLeida.split(cvsSpliteadoPor);
 						Bicicleta bicicleta = new Bicicleta();
-						bicicleta.setId(recorrido[1]);
-						DatosBicicleta export;
+						bicicleta.setearId(recorrido[1]);
+						DatosBicicleta datosBicicleta;
 						if(recorrido.length == 9){
 							if(!bicicletas.containsKey(bicicleta)){
-								export = new DatosBicicleta();
-								export.setCantidadVecesUsada(1);
-								export.setTiempoDeUso(Integer.parseInt(recorrido[8]));
+								datosBicicleta = new DatosBicicleta();
+								datosBicicleta.setearCantidadVecesUsada(1);
+								datosBicicleta.setearTiempoDeUso(Integer.parseInt(recorrido[8]));
 								
-								export = agregarTrayectoriaAlExportDeDatosBicicleta(
-										recorrido, export);
+								datosBicicleta = agregarTrayectoriaAlExportDeDatosBicicleta(
+										recorrido, datosBicicleta);
 								
-								bicicletas.put(bicicleta, export);
+								bicicletas.put(bicicleta, datosBicicleta);
 							}else{
-								export = bicicletas.get(bicicleta);
-								export.setCantidadVecesUsada(export.getCantidadVecesUsada()+1);
-								export.setTiempoDeUso(export.getTiempoDeUso()+Integer.parseInt(recorrido[8]));
+								datosBicicleta = bicicletas.get(bicicleta);
+								datosBicicleta.setearCantidadVecesUsada(datosBicicleta.obtenerCantidadVecesUsada()+1);
+								datosBicicleta.setearTiempoDeUso(datosBicicleta.obtenerTiempoDeUso()+Integer.parseInt(recorrido[8]));
 								
-								export = agregarTrayectoriaAlExportDeDatosBicicleta(
-										recorrido, export);
+								datosBicicleta = agregarTrayectoriaAlExportDeDatosBicicleta(
+										recorrido, datosBicicleta);
 								
-								bicicletas.put(bicicleta, export);
+								bicicletas.put(bicicleta, datosBicicleta);
 							}
 						}else{
 							System.out.println("La fila " + Integer.toString(contadorDeLineas) + 
-									" del archivo " + entry.getName() + " posee un error y fue descartada para el analisis");
+									" del archivo " + archivoZip.getName() + " posee un error y fue descartada para el analisis");
 						}
 				    }
 				} catch (FileNotFoundException e) {
@@ -384,20 +383,20 @@ public class ProcesadorEstadisticoImpl implements ProcesadorEstadistico{
 		Map<Bicicleta,DatosBicicleta> bicicletasMasUsadas = this.obtenerBicicletasUtilizadasMasVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMasUsadas.entrySet())
 		{
-			exportYml.addBicicletaMasUsada(entry.getKey());
+			exportYml.agregarBicicletaMasUsada(entry.getKey());
 		}
 		
 		Map<Bicicleta,DatosBicicleta> bicicletasMenosUsadas = this.obtenerBicicletaUtilizadaMenosVeces(bicicletasEnCsv);
 		for (Map.Entry<Bicicleta, DatosBicicleta> entry : bicicletasMenosUsadas.entrySet())
 		{
-			exportYml.addBicicletaMenosUsada(entry.getKey());
+			exportYml.agregarBicicletaMenosUsada(entry.getKey());
 		}
-		Integer promedioUso = this.getPromedioUso(bicicletasEnCsv);
-		exportYml.setPromedioUso(promedioUso);
+		Integer promedioUso = this.obtenerPromedioUso(bicicletasEnCsv);
+		exportYml.setearPromedioUso(promedioUso);
 		
 		Map<Trayectoria, Integer> recorridoMasRealizado = this.obtenerRecorridoMasRealizado(bicicletasEnCsv);
 		for(Map.Entry<Trayectoria, Integer> entry : recorridoMasRealizado.entrySet()){
-			exportYml.addTrayectoriaMasRealizada(entry.getKey());
+			exportYml.agregarTrayectoriaMasRealizada(entry.getKey());
 		}
 		
 		return exportYml;

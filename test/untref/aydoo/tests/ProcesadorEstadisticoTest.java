@@ -37,8 +37,8 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMasUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("403", biciMasUsada.getId());
-		Assert.assertEquals(Integer.valueOf(4), datosBiciMasUsada.getCantidadVecesUsada());
+		Assert.assertEquals("403", biciMasUsada.obtenerId());
+		Assert.assertEquals(Integer.valueOf(4), datosBiciMasUsada.obtenerCantidadVecesUsada());
 	}
 	
 	@Test
@@ -58,8 +58,8 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMenosUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("351", biciMenosUsada.getId());
-		Assert.assertEquals(Integer.valueOf(1), datosBiciMenosUsada.getCantidadVecesUsada());
+		Assert.assertEquals("351", biciMenosUsada.obtenerId());
+		Assert.assertEquals(Integer.valueOf(1), datosBiciMenosUsada.obtenerCantidadVecesUsada());
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class ProcesadorEstadisticoTest {
 		ZipFile zipFile = new ZipFile(path);
 		Map<Bicicleta, DatosBicicleta> bicicletas = procesador.llenarMapaDeBicicletasUsadas(zipFile);
 
-		Integer promedio = procesador.getPromedioUso(bicicletas);
+		Integer promedio = procesador.obtenerPromedioUso(bicicletas);
 		Assert.assertEquals(Integer.valueOf(19), promedio);
 	}
 	
@@ -112,8 +112,8 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMasUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("403", biciMasUsada.getId());
-		Assert.assertEquals(Integer.valueOf(8), datosBiciMasUsada.getCantidadVecesUsada());
+		Assert.assertEquals("403", biciMasUsada.obtenerId());
+		Assert.assertEquals(Integer.valueOf(8), datosBiciMasUsada.obtenerCantidadVecesUsada());
 	}
 	
 	@Test
@@ -133,8 +133,8 @@ public class ProcesadorEstadisticoTest {
 			datosBiciMenosUsada = entry.getValue();
 		}
 		
-		Assert.assertEquals("351", biciMenosUsada.getId());
-		Assert.assertEquals(Integer.valueOf(2), datosBiciMenosUsada.getCantidadVecesUsada());
+		Assert.assertEquals("351", biciMenosUsada.obtenerId());
+		Assert.assertEquals(Integer.valueOf(2), datosBiciMenosUsada.obtenerCantidadVecesUsada());
 	}
 	
 	@Test
@@ -166,7 +166,7 @@ public class ProcesadorEstadisticoTest {
 		ZipFile zipFile = new ZipFile(path);
 		Map<Bicicleta, DatosBicicleta> bicicletas = procesador.llenarMapaDeBicicletasUsadas(zipFile);
 
-		Integer promedio = procesador.getPromedioUso(bicicletas);
+		Integer promedio = procesador.obtenerPromedioUso(bicicletas);
 		Assert.assertEquals(Integer.valueOf(19), promedio);
 	}
 }

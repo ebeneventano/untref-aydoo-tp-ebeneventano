@@ -11,22 +11,22 @@ public class DatosBicicleta {
 	private Map<Trayectoria, Integer> trayectoriasRealizadas = new HashMap<Trayectoria,Integer>();
 	private Integer tiempoDeUso;
 	
-	public void setCantidadVecesUsada(Integer cantidadVecesUsada) {
+	public void setearCantidadVecesUsada(Integer cantidadVecesUsada) {
 		this.cantidadVecesUsada = cantidadVecesUsada;
 	}
-	public Integer getCantidadVecesUsada() {
+	public Integer obtenerCantidadVecesUsada() {
 		return cantidadVecesUsada;
 	}
-	public void setTiempoDeUso(Integer tiempoDeUso) {
+	public void setearTiempoDeUso(Integer tiempoDeUso) {
 		this.tiempoDeUso = tiempoDeUso;
 	}
-	public Integer getTiempoDeUso() {
+	public Integer obtenerTiempoDeUso() {
 		return tiempoDeUso;
 	}
-	public void setTrayectoriasRealizadas(Map<Trayectoria, Integer> trayectoriasRealizadas) {
+	public void setearTrayectoriasRealizadas(Map<Trayectoria, Integer> trayectoriasRealizadas) {
 		this.trayectoriasRealizadas = trayectoriasRealizadas;
 	}
-	public Map<Trayectoria, Integer> getTrayectoriasRealizadas() {
+	public Map<Trayectoria, Integer> obtenerTrayectoriasRealizadas() {
 		return trayectoriasRealizadas;
 	}
 

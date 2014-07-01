@@ -8,6 +8,7 @@ public class Trayectoria {
 	private Estacion estacionDestino;
 	private Date fechaOrigen;
 	private Date fechaDestino;
+	
 	public Estacion getEstacionOrigen() {
 		return estacionOrigen;
 	}
